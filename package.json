@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "build:3d": "node scripts/product-3d/build.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",
@@ -20,6 +21,8 @@
     "three": "^0.186.1"
   },
   "devDependencies": {
+    "@gltf-transform/core": "^4.5.1",
+    "@gltf-transform/functions": "^4.5.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -27,7 +30,9 @@
     "eslint": "^9",
     "eslint-config-next": "16.4.2",
     "eslint-config-prettier": "^10.1.8",
+    "opentype.js": "^2.0.0",
     "prettier": "^3.9.10",
+    "sharp": "^0.35.5",
     "typescript": "^5"
   }
 }
