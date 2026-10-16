@@ -1,0 +1,27 @@
+import styles from "./Wordmark.module.css";
+
+/** Крупное название: при прокрутке тяжёлые и лёгкие буквы меняются местами */
+export function Wordmark() {
+  return (
+    <div role="img" aria-label="Кварта" className={`ruled ${styles.wordmark}`}>
+      <span className={styles.arrowCell}>
+        <svg className={`anim-slide ${styles.arrow}`} viewBox="0 0 100 100" aria-hidden="true">
+          <path d="M50 8 V82 M18 54 L50 86 L82 54" />
+        </svg>
+      </span>
+      {"КВАРТА".split("").map((letter, i) => {
+        const heavy = i % 2 === 0;
+        return (
+          <span
+            key={i}
+            className={`${styles.cell} ${i === 5 ? styles.cellAccent : ""}`}
+            style={{ animationRange: `entry ${i * 4}% cover ${28 + i * 3}%` }}
+            aria-hidden="true"
+          >
+            <span className={heavy ? styles.heavy : styles.light}>{letter}</span>
+          </span>
+        );
+      })}
+    </div>
+  );
+}

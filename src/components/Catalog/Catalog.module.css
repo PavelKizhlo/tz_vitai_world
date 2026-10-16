@@ -1,0 +1,386 @@
+.anchor {
+  scroll-margin-top: var(--layout-header-height);
+}
+
+/* Заголовок каталога */
+.heading {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-s);
+  padding: clamp(var(--space-xl), 5vw, var(--space-2xl)) var(--space-gutter) 40px;
+  background: var(--color-bg);
+}
+
+.headingWaves {
+  left: 34%;
+  top: 50%;
+  width: 760px;
+  height: 760px;
+  transform: translateY(-50%);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-thin);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+}
+
+/* Общие части карточек */
+.card {
+  background: var(--color-bg);
+}
+
+.media {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(var(--space-xs) * 1.5);
+  padding: var(--space-card);
+  background: var(--color-bg);
+}
+
+.name {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-xs) / 2);
+  margin-top: var(--space-xs);
+  font-family: var(--font-display);
+}
+
+.nameMain {
+  font-weight: var(--fw-display-heavy);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  transition: letter-spacing 0.4s ease;
+}
+
+.card:hover .nameMain {
+  letter-spacing: 0.04em;
+}
+
+.origin {
+  font-weight: var(--fw-display-light);
+  font-size: var(--fs-caps-l);
+  line-height: var(--lh-label);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+.name-xl .nameMain {
+  font-size: var(--fs-product-xl);
+}
+
+.name-l .nameMain {
+  font-size: var(--fs-product-l);
+}
+
+.name-m {
+  gap: 2px;
+  margin-top: 0;
+}
+
+.name-m .nameMain {
+  font-size: var(--fs-product-m);
+  line-height: var(--lh-h3);
+}
+
+.name-m .origin {
+  font-size: var(--fs-caps-s);
+}
+
+.notes {
+  color: var(--color-ink-muted);
+}
+
+.notesSm {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--color-ink-muted);
+}
+
+.buy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-m);
+  margin-top: var(--space-s);
+}
+
+/* Строка 1: широкая карточка */
+.feature {
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  background: var(--color-rule);
+}
+
+.mediaFeature {
+  min-height: var(--layout-media-min-height);
+  background: var(--color-dusty-blue);
+}
+
+.ethiopiaSun {
+  right: -90px;
+  top: -110px;
+  width: 380px;
+  height: 380px;
+}
+
+.ethiopiaHill {
+  left: 40px;
+  bottom: -40px;
+  width: 180px;
+  height: 180px;
+}
+
+.photoFeature {
+  width: 260px;
+  aspect-ratio: 4 / 5;
+}
+
+/* Строка 2: две плитки */
+.pair {
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+}
+
+.mediaTile {
+  height: var(--layout-tile-media-height);
+}
+
+.mediaPeach {
+  background: var(--color-surface-peach);
+}
+
+.mediaSand {
+  background: var(--color-surface-300);
+}
+
+.photoTile {
+  width: 200px;
+  aspect-ratio: 4 / 5;
+  padding: calc(var(--space-xs) * 1.5);
+}
+
+.colombiaHill {
+  left: -70px;
+  bottom: -110px;
+  width: 280px;
+  height: 280px;
+}
+
+.brazilQuarter {
+  right: -60px;
+  bottom: -70px;
+  width: 300px;
+  height: 300px;
+}
+
+.brazilDot {
+  left: var(--space-xl);
+  top: var(--space-xl);
+  width: 72px;
+  height: 72px;
+}
+
+.tileBody {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-m) var(--space-l) var(--space-l);
+}
+
+.tileBuy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-s);
+  margin-top: auto;
+  padding-top: var(--space-s);
+}
+
+/* Строка 3: дрип-пакеты и подписка */
+.extras {
+  grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+}
+
+.drip {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--rule-width);
+  background: var(--color-rule);
+}
+
+.mediaDrip {
+  min-height: 420px;
+  background: var(--color-coral-soft);
+}
+
+.dripQuarter {
+  left: -50px;
+  top: -50px;
+  width: 220px;
+  height: 220px;
+}
+
+.dripHalves {
+  right: var(--space-s);
+  bottom: 0;
+  width: 200px;
+  height: 100px;
+}
+
+.photoSquare {
+  width: 230px;
+  aspect-ratio: 1;
+  padding: calc(var(--space-xs) * 1.5);
+}
+
+.subscription {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-l);
+  padding: clamp(var(--space-l), 4vw, var(--space-xl));
+  background: var(--color-surface-peach);
+}
+
+.subscriptionDot {
+  right: -40px;
+  top: -40px;
+  width: 150px;
+  height: 150px;
+}
+
+.subscriptionText,
+.subscriptionBuy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-xs) * 1.5);
+}
+
+.subscriptionBuy {
+  align-items: flex-start;
+  gap: var(--space-s);
+}
+
+.subscriptionTitle {
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-thin);
+  font-size: var(--fs-product-m);
+  line-height: var(--lh-h3);
+  letter-spacing: var(--tracking-heading);
+}
+
+/* Планшет */
+@media (max-width: 1023px) {
+  .feature,
+  .pair {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .extras {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mediaFeature {
+    min-height: 420px;
+  }
+
+  .ethiopiaSun {
+    width: 300px;
+    height: 300px;
+  }
+
+  .mediaTile {
+    height: calc(var(--layout-tile-media-height) * 0.85);
+  }
+
+  .tileBody {
+    padding: var(--space-m);
+  }
+
+  .tileBuy {
+    flex-wrap: wrap;
+  }
+
+  .subscription {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
+}
+
+/* Мобильный: всё в одну колонку */
+@media (max-width: 767px) {
+  .feature,
+  .pair,
+  .drip {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .heading {
+    padding-bottom: var(--space-l);
+  }
+
+  .mediaFeature,
+  .mediaDrip {
+    min-height: 360px;
+  }
+
+  .mediaTile {
+    height: 320px;
+  }
+
+  .photoFeature,
+  .photoTile {
+    width: 200px;
+  }
+
+  .photoSquare {
+    width: 200px;
+  }
+
+  .body {
+    padding: var(--space-l) var(--space-m) var(--space-xl);
+  }
+
+  .tileBody {
+    padding: var(--space-m) var(--space-m) var(--space-l);
+  }
+
+  .name-xl .nameMain {
+    font-size: var(--fs-product-l);
+  }
+
+  .card:hover .nameMain {
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .subscription {
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--space-xl) var(--space-m);
+  }
+}

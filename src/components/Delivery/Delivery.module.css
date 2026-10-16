@@ -1,0 +1,56 @@
+.delivery {
+  grid-template-columns: minmax(0, 5fr) minmax(0, 4fr) minmax(0, 3fr);
+  scroll-margin-top: var(--layout-header-height);
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-xs) * 1.5);
+  padding: var(--space-xl) var(--space-l);
+  background: var(--color-bg);
+}
+
+.hours {
+  background: var(--color-surface-200);
+}
+
+.value {
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-thin);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
+  letter-spacing: var(--tracking-snug);
+}
+
+.schedule {
+  font-family: var(--font-display);
+  font-size: var(--fs-button);
+  line-height: 1.75;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.schedule b {
+  font-weight: var(--fw-display-bold);
+}
+
+@media (max-width: 1023px) {
+  .delivery {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .hours {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 767px) {
+  .delivery {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cell {
+    padding: var(--space-l) var(--space-m);
+  }
+}

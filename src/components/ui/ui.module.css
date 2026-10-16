@@ -1,0 +1,136 @@
+/* Геометрические фигуры-декор */
+.shape {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+.fillA {
+  fill: var(--shape-a);
+}
+
+.fillB {
+  fill: var(--shape-b);
+}
+
+/* Плейсхолдер фото */
+.photo {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: calc(var(--space-xs) * 2);
+  border: var(--rule-width) dashed var(--color-line-strong);
+  border-radius: var(--radius-lg);
+  background: repeating-linear-gradient(
+    135deg,
+    var(--photo-a) 0 var(--deco-stripe),
+    var(--color-line) var(--deco-stripe) calc(var(--deco-stripe) * 2)
+  );
+  --photo-a: var(--color-surface-300);
+}
+
+.photoAlt {
+  --photo-a: var(--color-surface-200);
+}
+
+.photoCaption {
+  padding: 2px var(--space-xs);
+  border-radius: var(--radius-sm);
+  background: var(--photo-a);
+  color: var(--color-ink-muted);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  text-align: center;
+}
+
+/* Бейдж */
+.badge {
+  align-self: flex-start;
+  padding: 3px var(--space-xs);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-badge);
+  line-height: var(--lh-label);
+  font-weight: var(--fw-text-semibold);
+  letter-spacing: var(--tracking-badge);
+  text-transform: uppercase;
+  color: var(--color-ink);
+}
+
+.badgeSage {
+  background: var(--color-sage);
+  color: var(--color-on-support);
+}
+
+.badgeCoral {
+  background: var(--color-coral-soft);
+  color: var(--color-on-coral);
+}
+
+.badgeNeutral {
+  background: var(--color-surface-300);
+}
+
+/* Цена */
+.price {
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-bold);
+  font-size: var(--fs-price-l);
+  line-height: var(--lh-ui);
+  color: var(--color-terracotta);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.priceM {
+  font-size: var(--fs-price-m);
+}
+
+.currency {
+  margin-left: 6px;
+  font-weight: var(--fw-display-light);
+  font-size: var(--fs-caps-s);
+  letter-spacing: var(--tracking-currency);
+}
+
+/* Контурные волны */
+.waves {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  fill: none;
+  stroke: var(--color-coral);
+  stroke-opacity: var(--deco-waves-opacity);
+  stroke-width: var(--deco-waves-stroke);
+}
+
+.waves path {
+  vector-effect: non-scaling-stroke;
+}
+
+.wavesGroup {
+  transform-origin: 500px 500px;
+}
+
+@keyframes wavesSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+:global(:root:not([data-motion="off"])) .wavesGroup {
+  animation: wavesSpin var(--motion-waves) linear infinite;
+}
+
+/* Логотип: тяжёлые и лёгкие буквы через одну */
+.logo {
+  font-family: var(--font-display);
+  font-size: var(--fs-logo);
+  line-height: var(--lh-ui);
+  letter-spacing: var(--tracking-logo);
+  white-space: nowrap;
+}
+
+.logoFooter {
+  font-size: var(--fs-logo-footer);
+}
