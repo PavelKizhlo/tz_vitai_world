@@ -1,6 +1,7 @@
 import { products, type Product } from "@/data/catalog";
 import { AddToOrder } from "@/components/Order/AddToOrder";
-import { Badge, Photo, Price, Shape, Waves, cx } from "@/components/ui";
+import { Badge, Price, Shape, Waves, cx } from "@/components/ui";
+import { Product3D } from "@/components/Product3D/Product3D";
 import styles from "./Catalog.module.css";
 
 type NameSize = "xl" | "l" | "m";
@@ -32,7 +33,7 @@ export function Catalog() {
         <div className={cx(styles.media, styles.mediaFeature)}>
           <Shape kind="circle" colors={["ochre"]} className={styles.ethiopiaSun} />
           <Shape kind="half" colors={["surface-100"]} className={styles.ethiopiaHill} />
-          <Photo caption="фото пачки" className={styles.photoFeature} />
+          <Product3D product="ethiopia" className={styles.photoFeature} />
         </div>
         <div className={styles.body}>
           <Badge tone="sage">Светлая обжарка</Badge>
@@ -50,7 +51,7 @@ export function Catalog() {
         <article className={cx(styles.card, styles.tile)}>
           <div className={cx(styles.media, styles.mediaTile, styles.mediaPeach)}>
             <Shape kind="half" colors={["coral"]} className={styles.colombiaHill} />
-            <Photo caption="фото пачки" className={styles.photoTile} />
+            <Product3D product="colombia" className={styles.photoTile} />
           </div>
           <div className={styles.tileBody}>
             <ProductName product={colombia} size="m" />
@@ -65,7 +66,7 @@ export function Catalog() {
           <div className={cx(styles.media, styles.mediaTile, styles.mediaSand)}>
             <Shape kind="quarter" colors={["denim"]} className={styles.brazilQuarter} />
             <Shape kind="circle" colors={["coral"]} className={styles.brazilDot} />
-            <Photo caption="фото пачки" tone="200" className={styles.photoTile} />
+            <Product3D product="brazil" className={styles.photoTile} />
           </div>
           <div className={styles.tileBody}>
             <Badge tone="coral">Под эспрессо</Badge>
@@ -90,7 +91,7 @@ export function Catalog() {
               motion="slide"
               className={styles.dripHalves}
             />
-            <Photo caption="фото коробки дрип-пакетов" className={styles.photoSquare} />
+            <Product3D product="drip" className={styles.photoSquare} />
           </div>
           <div className={styles.body}>
             <Badge tone="neutral">Без кофемашины</Badge>

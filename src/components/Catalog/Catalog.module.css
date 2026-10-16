@@ -176,7 +176,6 @@
 .photoTile {
   width: 200px;
   aspect-ratio: 4 / 5;
-  padding: calc(var(--space-xs) * 1.5);
 }
 
 .colombiaHill {
@@ -249,9 +248,8 @@
 }
 
 .photoSquare {
-  width: 230px;
+  width: 300px;
   aspect-ratio: 1;
-  padding: calc(var(--space-xs) * 1.5);
 }
 
 .subscription {
@@ -359,7 +357,7 @@
   }
 
   .photoSquare {
-    width: 200px;
+    width: 260px;
   }
 
   .body {

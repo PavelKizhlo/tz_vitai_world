@@ -23,6 +23,26 @@ export function Footer() {
           Оставить заявку
         </a>
       </p>
+      <p className={styles.credits}>
+        3D-модели:{" "}
+        <a
+          href="https://sketchfab.com/3d-models/coffee-paper-bag-12e825336da1435a8decc198ea9fc06d"
+          className={styles.link}
+        >
+          Coffee Paper Bag
+        </a>{" "}
+        — clon6767,{" "}
+        <a
+          href="https://sketchfab.com/3d-models/lipton-mandarin-orange-tea-box-low-poly-prop-22d68744e4294f3984a498f842e7a3df"
+          className={styles.link}
+        >
+          Tea Box
+        </a>{" "}
+        — Vlaxled,{" "}
+        <a href="https://creativecommons.org/licenses/by/4.0/" className={styles.link}>
+          CC BY 4.0
+        </a>
+      </p>
     </footer>
   );
 }

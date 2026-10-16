@@ -1,5 +1,6 @@
 import { buttonClass } from "@/components/ui/button";
-import { Photo, Shape, Waves } from "@/components/ui";
+import { Shape, Waves } from "@/components/ui";
+import { Product3D } from "@/components/Product3D/Product3D";
 import styles from "./Hero.module.css";
 
 export function Hero() {
@@ -28,7 +29,7 @@ export function Hero() {
       <div className={styles.visual}>
         <Shape kind="quarter" colors={["coral"]} className={styles.quarter} />
         <Shape kind="halves-stack" colors={["sage", "ochre"]} className={styles.halves} />
-        <Photo caption="фото пачки · 4:5" className={`anim-bob ${styles.photo}`} />
+        <Product3D product="ethiopia" className={styles.photo} />
         <span className={`anim-breathe ${styles.tag}`} aria-hidden="true">
           свежая партия
         </span>
