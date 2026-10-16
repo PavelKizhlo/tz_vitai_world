@@ -9,7 +9,7 @@
 .logo {
   display: flex;
   align-items: center;
-  padding: 0 var(--space-l);
+  padding: 18px var(--space-l);
   background: var(--color-bg);
   color: var(--color-ink);
   text-decoration: none;
@@ -87,8 +87,8 @@
     padding-inline: var(--space-s);
   }
 
-  .logo > * {
-    font-size: calc(var(--fs-logo) * 0.8);
+  .logo > svg {
+    height: calc(var(--layout-logo-height) * 0.8);
   }
 
   .cta:hover {

@@ -1,6 +1,8 @@
 import type { CSSProperties, ReactNode } from "react";
 import styles from "./ui.module.css";
 
+export { Logo } from "./Logo";
+
 export type ColorToken =
   | "surface-100"
   | "surface-200"
@@ -107,18 +109,6 @@ export function Price({ value, unit, size = "l" }: PriceProps) {
     <span className={cx(styles.price, size === "m" && styles.priceM)}>
       {value}
       <span className={styles.currency}>{unit}</span>
-    </span>
-  );
-}
-
-export function Logo({ size = "header" }: { size?: "header" | "footer" }) {
-  return (
-    <span className={cx(styles.logo, size === "footer" && styles.logoFooter)}>
-      {"КВАРТА".split("").map((letter, i) => (
-        <span key={i} className={i % 2 === 0 ? "heavy" : "thin"}>
-          {letter}
-        </span>
-      ))}
     </span>
   );
 }

@@ -34,6 +34,11 @@
   --color-dusty-blue: #a9bfc4;
   --color-on-support: var(--color-surface-100);
 
+  /* Цвета: светлые вставки в знаке логотипа */
+  --color-logo-bean: #fde6de;
+  --color-logo-quarter: #fbefd6;
+  --color-logo-lens: #dfe6d4;
+
   /* Цвета: семантика */
   --color-bg: var(--color-surface-100);
   --color-rule: var(--color-line-strong);
@@ -75,8 +80,6 @@
   --fs-price-l: 24px;
   --fs-price-m: 22px;
   --fs-hand: 24px;
-  --fs-logo: 20px;
-  --fs-logo-footer: 36px;
   --fs-marquee: 18px;
 
   /* Межстрочные */
@@ -137,6 +140,8 @@
 
   /* Сетка и размеры блоков */
   --layout-header-height: 72px;
+  --layout-logo-height: 36px;
+  --layout-logo-footer-height: 56px;
   --layout-hero-min-height: 600px;
   --layout-media-min-height: 480px;
   --layout-tile-media-height: 380px;

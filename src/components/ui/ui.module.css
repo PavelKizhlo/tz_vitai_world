@@ -122,15 +122,74 @@
   animation: wavesSpin var(--motion-waves) linear infinite;
 }
 
-/* Логотип: тяжёлые и лёгкие буквы через одну */
-.logo {
-  font-family: var(--font-display);
-  font-size: var(--fs-logo);
-  line-height: var(--lh-ui);
-  letter-spacing: var(--tracking-logo);
-  white-space: nowrap;
+/* Логотип: знак из плиток + вордмарк */
+.logo,
+.logoFooter {
+  display: block;
+  width: auto;
+  height: var(--layout-logo-height);
+  max-width: 100%;
 }
 
 .logoFooter {
-  font-size: var(--fs-logo-footer);
+  height: var(--layout-logo-footer-height);
+}
+
+.logoCoral {
+  fill: var(--color-coral);
+}
+
+.logoOchre {
+  fill: var(--color-ochre);
+}
+
+.logoDenim {
+  fill: var(--color-denim);
+}
+
+.logoSage {
+  fill: var(--color-sage);
+}
+
+.logoBean {
+  fill: var(--color-logo-bean);
+}
+
+.logoQuarter {
+  fill: var(--color-logo-quarter);
+}
+
+.logoLens {
+  fill: var(--color-logo-lens);
+}
+
+.logoBeanLine,
+.logoLensLine,
+.logoMarkLetter,
+.logoLetter {
+  fill: none;
+}
+
+.logoBeanLine,
+.logoLensLine {
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+.logoBeanLine {
+  stroke: var(--color-coral);
+}
+
+.logoLensLine {
+  stroke: var(--color-sage);
+}
+
+.logoMarkLetter {
+  stroke: var(--color-surface-100);
+  stroke-width: 22;
+}
+
+.logoLetter {
+  stroke: currentColor;
+  stroke-width: 16;
 }

@@ -5,7 +5,7 @@ export function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.brand}>
-        <Logo size="footer" />
+        <Logo variant="footer" label="Кварта" />
       </div>
       <p className={styles.cell}>
         Минск, ул. Короля, 9

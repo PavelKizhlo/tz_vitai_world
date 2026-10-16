@@ -43,7 +43,7 @@
     padding: var(--space-l) var(--space-m) 0;
   }
 
-  .brand > * {
-    font-size: calc(var(--fs-logo-footer) * 0.8);
+  .brand > svg {
+    height: calc(var(--layout-logo-footer-height) * 0.8);
   }
 }
