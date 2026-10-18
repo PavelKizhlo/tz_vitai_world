@@ -1,6 +1,8 @@
 .footer {
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(0, 5fr) minmax(0, 4fr);
+  /* Плашка во всю ширину, содержимое — в контейнере, как у рядов сетки */
+  padding-inline: var(--layout-side);
   background: var(--color-denim);
   color: var(--color-on-support);
 }
@@ -15,12 +17,53 @@
   line-height: var(--lh-body-sm);
 }
 
-.credits {
-  grid-column: 1 / -1;
-  padding: 0 var(--space-l) var(--space-m);
-  font-size: var(--fs-label);
-  line-height: var(--lh-label);
-  opacity: 0.7;
+/* Соцсети под логотипом */
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-m);
+}
+
+.socials {
+  display: flex;
+  gap: var(--space-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-height-sm);
+  height: var(--control-height-sm);
+  border: var(--control-border-width) solid var(--color-on-support);
+  border-radius: var(--radius-md);
+  color: var(--color-on-support);
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.social:hover {
+  background: var(--color-on-support);
+  color: var(--color-denim);
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+}
+
+.iconFill {
+  fill: currentColor;
+  stroke: none;
 }
 
 .link,
@@ -48,10 +91,6 @@
 
   .brand,
   .cell {
-    padding: var(--space-l) var(--space-m) 0;
-  }
-
-  .credits {
     padding: var(--space-l) var(--space-m) 0;
   }
 

@@ -1,11 +1,53 @@
+import type { ReactNode } from "react";
 import { Logo } from "@/components/ui";
 import styles from "./Footer.module.css";
+
+// Ссылки пока ведут наверх страницы — заменить на настоящие профили
+const socials: { label: string; href: string; icon: ReactNode }[] = [
+  {
+    label: "Instagram",
+    href: "#top",
+    icon: (
+      <>
+        <rect x="3" y="3" width="18" height="18" rx="5" />
+        <circle cx="12" cy="12" r="4" />
+        <circle cx="17.5" cy="6.5" r="1.1" className={styles.iconFill} />
+      </>
+    ),
+  },
+  {
+    label: "Telegram",
+    href: "#top",
+    icon: <path d="M21.5 4.5 2.5 11.8l6.3 2.1L18 7.5l-7.2 7.4.3 5.6 3.3-4.1 4.6 3.5z" />,
+  },
+  {
+    label: "YouTube",
+    href: "#top",
+    icon: (
+      <>
+        <rect x="2.5" y="5.5" width="19" height="13" rx="4" />
+        <path d="M10 9.2v5.6l5-2.8z" className={styles.iconFill} />
+      </>
+    ),
+  },
+];
 
 export function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.brand}>
         <Logo variant="footer" label="Кварта" />
+        <ul className={styles.socials} aria-label="Мы в соцсетях">
+          {socials.map((social) => (
+            <li key={social.label}>
+              <a href={social.href} className={styles.social} aria-label={social.label}>
+                <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.icon}>
+                  {social.icon}
+                </svg>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
       <p className={styles.cell}>
         Минск, ул. Короля, 9
@@ -21,26 +63,6 @@ export function Footer() {
         <br />
         <a href="#order" className={styles.link}>
           Оставить заявку
-        </a>
-      </p>
-      <p className={styles.credits}>
-        3D-модели:{" "}
-        <a
-          href="https://sketchfab.com/3d-models/coffee-paper-bag-12e825336da1435a8decc198ea9fc06d"
-          className={styles.link}
-        >
-          Coffee Paper Bag
-        </a>{" "}
-        — clon6767,{" "}
-        <a
-          href="https://sketchfab.com/3d-models/lipton-mandarin-orange-tea-box-low-poly-prop-22d68744e4294f3984a498f842e7a3df"
-          className={styles.link}
-        >
-          Tea Box
-        </a>{" "}
-        — Vlaxled,{" "}
-        <a href="https://creativecommons.org/licenses/by/4.0/" className={styles.link}>
-          CC BY 4.0
         </a>
       </p>
     </footer>
