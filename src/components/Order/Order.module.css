@@ -1,6 +1,5 @@
 .order {
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  min-height: var(--layout-row-height);
   scroll-margin-top: var(--layout-header-height);
 }
 
@@ -9,21 +8,17 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  gap: var(--space-m);
+  padding: clamp(var(--space-xl), 6vw, var(--space-3xl)) var(--space-gutter);
   background: var(--color-surface-200);
 }
 
-.introText {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-m);
-  padding: clamp(var(--space-xl), 6vw, var(--space-3xl)) var(--space-gutter);
-}
-
-/* Фото без полей добирает высоту ряда под текстом */
+/* Фото без полей во всю высоту ряда рядом с текстом */
 .photo {
   position: relative;
-  flex-grow: 1;
-  min-height: 300px;
+  overflow: hidden;
+  min-height: clamp(320px, 32vw, 520px);
 }
 
 .image {
@@ -50,125 +45,170 @@
   height: 200px;
 }
 
+/* Форма во всю ширину контейнера продолжает сетку страницы: ячейки без полей, между ними — те же линии */
 .formCell {
+  grid-column: 1 / -1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: clamp(40px, 5vw, 80px) var(--space-gutter);
-  background: var(--color-bg);
+  background: var(--color-rule);
 }
 
 /* Форма */
 .form {
   display: flex;
+  flex-grow: 1;
   flex-direction: column;
-  gap: var(--space-m);
-  max-width: 560px;
+  gap: var(--rule-width);
 }
 
 .fields {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--space-s);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--rule-width);
 }
 
-.field,
-.fieldset {
+.field {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: 6px;
+  padding: var(--space-m) var(--space-l);
+  background: var(--color-bg);
+}
+
+/* У поля нет рамки — ошибку и фокус показывает вся ячейка */
+.field:has(.input[aria-invalid="true"]):not(:focus-within) {
+  box-shadow: inset 0 -3px 0 var(--color-terracotta);
+}
+
+.field:focus-within {
+  box-shadow: inset 0 0 0 2px var(--color-focus);
 }
 
 .fieldset {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
   min-width: 0;
   margin: 0;
   padding: 0;
   border: 0;
+  background: var(--color-bg);
 }
 
 .label {
+  margin: 0;
   padding: 0;
-  margin-bottom: var(--space-xs);
-  font-size: var(--fs-body-sm);
+  font-size: var(--fs-badge);
   line-height: var(--lh-body-sm);
-  font-weight: var(--fw-text-semibold);
+  font-weight: var(--fw-text-medium);
+  color: var(--color-ink-muted);
 }
 
-.field .label {
-  margin-bottom: 0;
+/* float выводит legend из рамки fieldset в обычный поток — над клетками вариантов */
+.fieldset > .label {
+  float: left;
+  width: 100%;
+  padding: var(--space-m) var(--space-l) var(--space-s);
 }
 
 .input {
   width: 100%;
-  height: var(--control-height);
-  padding: 0 var(--space-s);
-  border: var(--control-border-width) solid var(--color-line-strong);
-  border-radius: var(--radius-md);
-  background: var(--color-bg);
-  font-family: var(--font-text);
-  font-size: var(--fs-body);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  outline: none;
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-thin);
+  font-size: clamp(20px, 1.9vw, 26px);
+  line-height: 1.3;
   color: var(--color-ink);
 }
 
 .input::placeholder {
   color: var(--color-ink-muted);
-  opacity: 0.8;
+  opacity: 0.7;
 }
 
-.input[aria-invalid="true"] {
-  border-color: var(--color-terracotta);
-}
-
+/* Ошибка встаёт в строку подписи справа — ячейки не меняют высоту */
 .error {
-  font-size: var(--fs-body-sm);
+  position: absolute;
+  top: var(--space-m);
+  right: var(--space-l);
+  max-width: calc(100% - 7em);
+  font-size: var(--fs-badge);
   line-height: var(--lh-body-sm);
+  font-weight: var(--fw-text-medium);
+  text-align: right;
   color: var(--color-terracotta);
 }
 
+/* Варианты — равные клетки на всю ширину, разделённые линиями */
 .chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-xs);
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: var(--rule-width);
+  border-top: var(--rule-width) solid var(--color-rule);
+  background: var(--color-rule);
 }
 
 .chip {
-  min-height: var(--control-height-sm);
-  padding: 0 var(--space-s);
-  border: var(--control-border-width) solid var(--color-line-strong);
-  border-radius: var(--radius-md);
+  display: flex;
+  align-items: flex-end;
+  min-height: 96px;
+  padding: var(--space-s) var(--space-m);
+  border: 0;
   background: var(--color-bg);
-  font-family: var(--font-text);
-  font-weight: var(--fw-text-semibold);
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-light);
   font-size: var(--fs-body-sm);
+  line-height: 1.3;
+  text-align: left;
   color: var(--color-ink);
   cursor: pointer;
-  transition:
-    letter-spacing 0.3s,
-    background-color 0.2s;
+  transition: background-color 0.2s;
 }
 
 .chip:hover {
   background: var(--color-surface-200);
 }
 
-.chipOn,
-.chipOn:hover {
-  border-color: var(--color-coral);
-  background: var(--color-coral-soft);
-  letter-spacing: var(--tracking-badge);
+.chip:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
 }
 
-.submit {
-  align-self: flex-start;
+.chipOn,
+.chipOn:hover {
+  background: var(--color-coral-soft);
+  font-weight: var(--fw-display-bold);
+}
+
+/* Кнопка — коралловая ячейка на всю ширину */
+.form .submit {
+  justify-content: flex-start;
+  align-items: flex-end;
+  min-height: 112px;
+  padding: var(--space-l);
+  border: 0;
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-light);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
 }
 
 /* Успешная отправка */
 .success {
   display: flex;
+  flex-grow: 1;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: center;
   gap: var(--space-s);
-  max-width: 520px;
+  padding: var(--space-xl) var(--space-l);
+  background: var(--color-bg);
 }
 
 .successTitle {
@@ -184,13 +224,11 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .introText {
+  .intro {
     padding-bottom: var(--space-2xl);
   }
 
-  /* В одну колонку ряд не тянется — фото держит пропорцию сам */
   .photo {
-    flex-grow: 0;
     min-height: 0;
     aspect-ratio: 16 / 9;
   }
@@ -201,7 +239,7 @@
     min-height: 0;
   }
 
-  .introText {
+  .intro {
     gap: var(--space-s);
     padding: var(--space-2xl) var(--space-m) var(--space-xl);
   }
@@ -210,11 +248,44 @@
     aspect-ratio: 4 / 3;
   }
 
-  .formCell {
-    padding: var(--space-xl) var(--space-m) var(--space-2xl);
+  .fields {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .submit {
-    align-self: stretch;
+  .field {
+    padding: var(--space-s) var(--space-m);
+  }
+
+  .fieldset > .label {
+    padding: var(--space-s) var(--space-m) var(--space-xs);
+  }
+
+  .error {
+    top: var(--space-s);
+    right: var(--space-m);
+  }
+
+  /* Пять клеток в строку на телефоне не влезают — по две, нечётная последняя на всю ширину */
+  .chips {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-flow: row;
+  }
+
+  .chip {
+    min-height: 72px;
+    padding: var(--space-s) var(--space-m);
+  }
+
+  .chip:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  .form .submit {
+    min-height: 88px;
+    padding: var(--space-m);
+  }
+
+  .success {
+    padding: var(--space-xl) var(--space-m);
   }
 }
