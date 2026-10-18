@@ -45,6 +45,9 @@ export default function Scene({ product, mode, active, onReady }: SceneProps) {
       frameloop={animated && active ? "always" : "demand"}
       camera={{ fov: FOV, position: [0, 0, CAMERA_Z] }}
       gl={{ alpha: true, antialias: true, powerPreference: "low-power" }}
+      // R3F ставит обёртке pointer-events: auto — канвас с запасом перекрывал бы ховер под собой.
+      // Курсор сцена читает с window, свои события ей не нужны
+      style={{ pointerEvents: "none" }}
     >
       <ambientLight intensity={1.6} />
       <directionalLight position={[-3, 4, 5]} intensity={1.4} />
