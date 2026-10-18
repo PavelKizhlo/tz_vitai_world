@@ -16,10 +16,11 @@
   background: var(--color-bg);
 }
 
+/* Зёрна в промежутке между заголовком и подписью справа */
 .headingBeans {
-  left: 38%;
+  left: 50%;
   top: 50%;
-  width: 820px;
+  width: clamp(200px, calc(64% - 430px), 420px);
   transform: translateY(-50%);
   rotate: -8deg;
 }
@@ -322,10 +323,11 @@
   border-top: var(--rule-width) solid var(--color-rule);
 }
 
+/* Зёрна по диагонали из правого верхнего угла, над ценой */
 .subscriptionBeans {
-  right: -150px;
-  top: -30px;
-  width: 380px;
+  right: -90px;
+  top: 30px;
+  width: 360px;
   rotate: 42deg;
 }
 
@@ -405,6 +407,21 @@
     padding-block: var(--space-xl);
   }
 
+  .headingBeans {
+    left: 48%;
+    width: 18%;
+  }
+
+  /* Справа теперь кнопка на белом — зёрна переезжают в ячейку цены, правее суммы */
+  .subscriptionBeans {
+    top: 50%;
+    right: auto;
+    left: calc(var(--space-gutter) + 230px);
+    width: 280px;
+    transform: translateY(-50%);
+    rotate: 8deg;
+  }
+
   .subscriptionButton {
     flex-basis: 40%;
     border-top: 0;
@@ -429,6 +446,16 @@
 
   .heading {
     padding-bottom: var(--space-l);
+  }
+
+  /* Подпись уходит под заголовок — зёрна справа от неё */
+  .headingBeans {
+    top: auto;
+    right: -30px;
+    bottom: var(--space-s);
+    left: auto;
+    width: 170px;
+    transform: none;
   }
 
   .mediaFeature,
@@ -482,6 +509,15 @@
 
   .subscriptionBuy {
     flex-direction: column;
+  }
+
+  .subscriptionBeans {
+    top: -50px;
+    right: -100px;
+    left: auto;
+    width: 300px;
+    transform: none;
+    rotate: 42deg;
   }
 
   .subscriptionButton {

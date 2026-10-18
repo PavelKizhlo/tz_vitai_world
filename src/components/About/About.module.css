@@ -36,11 +36,12 @@
   background: var(--color-bg);
 }
 
+/* Растение в правом верхнем углу: справа от короткого заголовка, над абзацами */
 .plant {
-  right: -180px;
-  bottom: -220px;
-  width: 680px;
-  rotate: 16deg;
+  top: -10%;
+  right: -16%;
+  width: clamp(260px, 50%, 460px);
+  rotate: 196deg;
 }
 
 .title {

@@ -40,9 +40,9 @@
 
 /* Ветка свисает из угла над заголовком */
 .leaves {
-  right: -150px;
-  top: -170px;
-  width: 440px;
+  right: -190px;
+  top: -200px;
+  width: 420px;
   rotate: 150deg;
 }
 
@@ -286,6 +286,20 @@
 
   .fields {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Заголовок во всю ширину — ветка только заглядывает в угол */
+  .leaves {
+    right: -170px;
+    top: -180px;
+    width: 340px;
+  }
+
+  /* Зёрна уходят в угол, чтобы не ложиться на лицо */
+  .beans {
+    right: -120px;
+    bottom: -130px;
+    width: 240px;
   }
 
   .field {

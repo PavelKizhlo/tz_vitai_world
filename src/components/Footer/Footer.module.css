@@ -54,10 +54,11 @@
   opacity: 0.6;
 }
 
+/* Зёрна вдоль верхнего края, над копирайтом */
 .beans {
-  right: -70px;
-  top: -10px;
-  width: 360px;
+  right: -90px;
+  top: -40px;
+  width: 300px;
   rotate: -12deg;
 }
 

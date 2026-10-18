@@ -13,10 +13,11 @@
   background: var(--color-bg);
 }
 
+/* Ветка в правом нижнем углу: справа от лида и над кнопками, заголовок не задевает */
 .leaves {
-  right: -220px;
-  bottom: -260px;
-  width: 860px;
+  right: -28%;
+  bottom: -20%;
+  width: clamp(320px, 66%, 640px);
   rotate: -18deg;
 }
 
@@ -115,6 +116,10 @@
   .photo {
     width: min(80%, calc(56svh * 0.8));
   }
+
+  .leaves {
+    bottom: -14%;
+  }
 }
 
 /* Мобильный: текст, под ним визуал */
@@ -141,6 +146,14 @@
 
   .photo {
     width: min(64%, calc(40svh * 0.8));
+  }
+
+  /* На телефоне свободен только правый верхний угол — справа от короткого «Кофе,» */
+  .leaves {
+    top: -60px;
+    right: -90px;
+    bottom: auto;
+    width: 240px;
   }
 
   .cherries {
