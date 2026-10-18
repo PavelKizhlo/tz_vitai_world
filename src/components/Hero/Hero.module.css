@@ -13,12 +13,11 @@
   background: var(--color-bg);
 }
 
-.waves {
-  left: 50%;
-  top: 50%;
-  width: 1400px;
-  height: 1400px;
-  transform: translate(-50%, -50%);
+.leaves {
+  right: -220px;
+  bottom: -260px;
+  width: 860px;
+  rotate: -18deg;
 }
 
 .title {
@@ -70,20 +69,18 @@
   background: var(--color-gold-100);
 }
 
-.rosette {
-  left: -260px;
-  top: -260px;
-  width: 560px;
-  height: 560px;
-  --lines-speed: 120s;
+.beans {
+  left: -110px;
+  top: -130px;
+  width: 440px;
+  rotate: 24deg;
 }
 
-.spiral {
+.cherries {
   right: var(--space-l);
   bottom: var(--space-l);
-  width: 200px;
-  height: 200px;
-  --lines-speed: 50s;
+  width: 220px;
+  rotate: -20deg;
 }
 
 /* Модель вписывается и в ширину колонки, и в высоту экрана */
@@ -146,11 +143,10 @@
     width: min(64%, calc(40svh * 0.8));
   }
 
-  .spiral {
+  .cherries {
     right: var(--space-m);
     bottom: var(--space-m);
-    width: 120px;
-    height: 120px;
+    width: 140px;
   }
 
   .tag {

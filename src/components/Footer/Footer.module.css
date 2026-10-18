@@ -1,83 +1,76 @@
+/*
+ * Ряд .ruled из двух строк на 12 колонок: логотип и текст по трети,
+ * под ними три ячейки-кнопки и копирайт по четверти
+ */
 .footer {
-  display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 5fr) minmax(0, 4fr);
-  position: relative;
-  /* Плашка во всю ширину, содержимое — в контейнере, как у рядов сетки */
-  padding-inline: var(--layout-side);
-  background: var(--color-white);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  border-bottom: 0;
   color: var(--color-ink);
-}
-
-/* Края контейнера, как у рядов .ruled; видны, только когда экран шире контейнера */
-@media (min-width: 1441px) {
-  .footer::before,
-  .footer::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: var(--rule-width);
-    background: var(--color-rule);
-    pointer-events: none;
-  }
-
-  .footer::before {
-    left: calc(var(--layout-side) - var(--rule-width));
-  }
-
-  .footer::after {
-    right: calc(var(--layout-side) - var(--rule-width));
-  }
 }
 
 .brand,
 .cell {
+  grid-column: span 4;
+  background: var(--color-bg);
+}
+
+.brand {
+  display: flex;
+  align-items: flex-start;
   padding: var(--space-xl) var(--space-l);
 }
 
 .cell {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-xs) * 1.5);
+  padding: var(--space-xl) var(--space-l);
   font-size: var(--fs-body-sm);
   line-height: var(--lh-body-sm);
 }
 
-/* Соцсети под логотипом */
-.brand {
+.social,
+.copyright {
+  grid-column: span 3;
+}
+
+/* Копирайт — ячейка с зёрнами на фоне */
+.copyright {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-m);
+  justify-content: flex-end;
+  min-height: var(--control-height);
+  padding: var(--space-m) var(--space-l);
+  background: var(--color-bg);
+  color: var(--color-ink-muted);
+  font-size: var(--fs-label);
+  line-height: var(--lh-label);
 }
 
-.socials {
+.copyrightNote {
+  opacity: 0.6;
+}
+
+.beans {
+  right: -70px;
+  top: -10px;
+  width: 360px;
+  rotate: -12deg;
+}
+
+/* Иконка над подписью, стрелка кнопки остаётся справа внизу */
+.socialLabel {
   display: flex;
-  gap: var(--space-xs);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.social {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--control-height-sm);
-  height: var(--control-height-sm);
-  border: var(--control-border-width) solid var(--color-line-strong);
-  color: var(--color-ink);
-  transition:
-    background-color 0.2s,
-    color 0.2s;
-}
-
-.social:hover {
-  border-color: var(--color-navy);
-  background: var(--color-navy);
-  color: var(--color-white);
+  flex-direction: column;
+  gap: var(--space-s);
 }
 
 .icon {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.6;
@@ -89,38 +82,51 @@
   stroke: none;
 }
 
-.link {
-  color: var(--color-ink);
-}
-
-.link:hover {
-  color: var(--color-gold-deep);
-}
-
 @media (max-width: 1023px) {
-  .footer {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  }
-
   .brand {
     grid-column: 1 / -1;
-    padding-bottom: 0;
+  }
+
+  .cell,
+  .social,
+  .copyright {
+    grid-column: span 6;
   }
 }
 
+/* Соцсети — три квадратные ячейки с одной иконкой, заявка под ними во всю ширину */
 @media (max-width: 767px) {
   .footer {
-    grid-template-columns: minmax(0, 1fr);
     /* Место под кнопку панели темы */
     padding-bottom: var(--space-2xl);
   }
 
+  .cell,
+  .copyright {
+    grid-column: 1 / -1;
+  }
+
+  .copyright {
+    padding: var(--space-m);
+  }
+
   .brand,
   .cell {
-    padding: var(--space-l) var(--space-m) 0;
+    padding: var(--space-l) var(--space-m);
   }
 
   .brand > svg {
     height: calc(var(--layout-logo-footer-height) * 0.8);
+  }
+
+  .social {
+    grid-column: span 4;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .social::after,
+  .socialName {
+    display: none;
   }
 }

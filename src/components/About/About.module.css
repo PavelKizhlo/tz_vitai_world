@@ -36,11 +36,11 @@
   background: var(--color-bg);
 }
 
-.waves {
-  right: -320px;
-  bottom: -380px;
-  width: 960px;
-  height: 960px;
+.plant {
+  right: -180px;
+  bottom: -220px;
+  width: 680px;
+  rotate: 16deg;
 }
 
 .title {

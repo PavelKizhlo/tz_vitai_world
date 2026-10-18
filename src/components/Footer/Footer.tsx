@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { Logo } from "@/components/ui";
+import { Logo, Sketch } from "@/components/ui";
+import { buttonClass } from "@/components/ui/button";
 import styles from "./Footer.module.css";
 
 // Ссылки пока ведут наверх страницы — заменить на настоящие профили
@@ -32,38 +33,53 @@ const socials: { label: string; href: string; icon: ReactNode }[] = [
   },
 ];
 
+/**
+ * Футер — такой же ряд-сетка, как секции: сверху логотип и две колонки текста,
+ * снизу ячейки-кнопки соцсетей и копирайт
+ */
 export function Footer() {
   return (
-    <footer className={styles.footer}>
+    <footer className={`ruled ${styles.footer}`}>
       <div className={styles.brand}>
         <Logo variant="footer" label="Кварта" />
-        <ul className={styles.socials} aria-label="Мы в соцсетях">
-          {socials.map((social) => (
-            <li key={social.label}>
-              <a href={social.href} className={styles.social} aria-label={social.label}>
-                <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.icon}>
-                  {social.icon}
-                </svg>
-              </a>
-            </li>
-          ))}
-        </ul>
       </div>
-      <p className={styles.cell}>
-        Минск, ул. Короля, 9
-        <br />
-        пн–пт 8:00–20:00
-        <br />
-        сб–вс 10:00–18:00
-      </p>
-      <p className={styles.cell}>
-        Обжарка — четверг
-        <br />
-        Доставка — пятница
-        <br />
-        <a href="#order" className={styles.link}>
-          Оставить заявку
+      <div className={styles.cell}>
+        <span className="eyebrow">Мастерская</span>
+        <p>
+          Минск, ул. Короля, 9
+          <br />
+          пн–пт 8:00–20:00
+          <br />
+          сб–вс 10:00–18:00
+        </p>
+      </div>
+      <div className={styles.cell}>
+        <span className="eyebrow">Неделя</span>
+        <p>
+          Обжарка — четверг
+          <br />
+          Доставка — пятница
+        </p>
+      </div>
+      {socials.map((social) => (
+        <a
+          key={social.label}
+          href={social.href}
+          aria-label={social.label}
+          className={buttonClass({ variant: "line", className: styles.social })}
+        >
+          <span className={styles.socialLabel}>
+            <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.icon}>
+              {social.icon}
+            </svg>
+            <span className={styles.socialName}>{social.label}</span>
+          </span>
         </a>
+      ))}
+      <p className={styles.copyright}>
+        <Sketch name="beans-row" className={styles.beans} />
+        <span>© 2019–{new Date().getFullYear()} Кварта</span>
+        <span className={styles.copyrightNote}>Мастерская обжарки, Минск</span>
       </p>
     </footer>
   );

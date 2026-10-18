@@ -1,6 +1,6 @@
 import { products, type Product } from "@/data/catalog";
 import { AddToOrder } from "@/components/Order/AddToOrder";
-import { Badge, Lines, Price, cx } from "@/components/ui";
+import { Badge, Price, Sketch, cx } from "@/components/ui";
 import { FlightSlot } from "@/components/Motion/FlightProduct";
 import { Product3D } from "@/components/Product3D/Product3D";
 import styles from "./Catalog.module.css";
@@ -33,7 +33,7 @@ export function Catalog() {
     <>
       <div id="coffee" className={`ruled ${styles.anchor}`} data-grid="lines">
         <div className={styles.heading}>
-          <Lines kind="waves" className={styles.headingWaves} parallax={0.15} />
+          <Sketch name="beans-stages" className={styles.headingBeans} parallax={0.15} />
           <h2 className={styles.title} data-split="">
             Что жарим&nbsp;сейчас
           </h2>
@@ -44,8 +44,8 @@ export function Catalog() {
       {/* Строка 1: Эфиопия */}
       <article className={`ruled ${styles.card} ${styles.feature}`} data-grid="">
         <div className={cx(styles.media, styles.mediaFeature)}>
-          <Lines kind="rays" parallax={0.25} className={styles.ethiopiaRays} />
-          <Lines kind="zigzag" reverse className={styles.ethiopiaZigzag} />
+          <Sketch name="sack" parallax={0.25} className={styles.ethiopiaSack} />
+          <Sketch name="beans-pair" className={styles.ethiopiaBeans} />
           <FlightSlot id="catalog" className={styles.photoFeature} />
         </div>
         <div className={styles.body}>
@@ -68,7 +68,7 @@ export function Catalog() {
       <section aria-label="Колумбия и Бразилия" className={`ruled ${styles.pair}`} data-grid="">
         <article className={cx(styles.card, styles.tile)}>
           <div className={cx(styles.media, styles.mediaTile, styles.mediaPale)}>
-            <Lines kind="squares" className={styles.colombiaSquares} />
+            <Sketch name="berry-branch" className={styles.colombiaBranch} />
             <Product3D product="colombia" className={styles.photoTile} />
           </div>
           <div className={styles.tileBody}>
@@ -87,8 +87,8 @@ export function Catalog() {
         </article>
         <article className={cx(styles.card, styles.tile)}>
           <div className={cx(styles.media, styles.mediaTile, styles.mediaSand)}>
-            <Lines kind="waves" className={styles.brazilWaves} />
-            <Lines kind="rosette" reverse parallax={0.4} className={styles.brazilRosette} />
+            <Sketch name="scoop" className={styles.brazilScoop} />
+            <Sketch name="beans-pile" parallax={0.4} className={styles.brazilBeans} />
             <Product3D product="brazil" className={styles.photoTile} />
           </div>
           <div className={styles.tileBody}>
@@ -111,8 +111,8 @@ export function Catalog() {
       {/* Строка 3: дрип-пакеты */}
       <article className={cx("ruled", styles.card, styles.drip)} data-grid="">
         <div className={cx(styles.media, styles.mediaDrip)}>
-          <Lines kind="spiral" className={styles.dripSpiral} />
-          <Lines kind="rays" reverse className={styles.dripRays} />
+          <Sketch name="cup" className={styles.dripCup} />
+          <Sketch name="spoon" className={styles.dripSpoon} />
           <Product3D product="drip" className={styles.photoSquare} />
         </div>
         <div className={styles.body}>
@@ -154,7 +154,7 @@ export function Catalog() {
           </ol>
         </div>
         <div className={styles.subscriptionBuy}>
-          <Lines kind="zigzag" parallax={0.2} className={styles.subscriptionZigzag} />
+          <Sketch name="beans-row" parallax={0.2} className={styles.subscriptionBeans} />
           <div className={styles.subscriptionPrice}>
             <Price value={subscription.price} unit={subscription.unit} />
           </div>

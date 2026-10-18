@@ -130,6 +130,7 @@
   /* Декор */
   --deco-lines-opacity: 0.34;
   --deco-lines-stroke: 1.5;
+  --deco-sketch-opacity: 0.28;
   --deco-stripe: 14px;
 
   /* Анимация */
@@ -340,7 +341,7 @@ html.lenis {
   scroll-behavior: auto;
 }
 
-/* Свойство translate складывается с transform, поэтому не мешает CSS-анимации волн */
+/* Свойство translate складывается с transform и rotate, поэтому не мешает анимациям и повороту */
 [data-parallax] {
   translate: 0 var(--parallax, 0px);
 }

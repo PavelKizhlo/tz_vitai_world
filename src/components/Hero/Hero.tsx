@@ -1,5 +1,5 @@
 import { buttonClass } from "@/components/ui/button";
-import { Lines } from "@/components/ui";
+import { Sketch } from "@/components/ui";
 import { FlightSlot } from "@/components/Motion/FlightProduct";
 import styles from "./Hero.module.css";
 
@@ -12,7 +12,7 @@ export function Hero() {
       data-grid="intro"
     >
       <div className={styles.text}>
-        <Lines kind="waves" className={styles.waves} parallax={0.15} />
+        <Sketch name="branch-leaves" className={styles.leaves} parallax={0.15} />
         <div className={styles.copy}>
           <span className="eyebrow">Мастерская обжарки · Минск</span>
           <h1 id="hero-title" className={styles.title} data-split="intro">
@@ -34,8 +34,8 @@ export function Hero() {
       </div>
 
       <div className={styles.visual}>
-        <Lines kind="rosette" parallax={0.15} className={styles.rosette} />
-        <Lines kind="spiral" reverse parallax={0.35} className={styles.spiral} />
+        <Sketch name="beans-scattered" parallax={0.15} className={styles.beans} />
+        <Sketch name="cherries" parallax={0.35} className={styles.cherries} />
         <FlightSlot id="hero" className={styles.photo} />
         <span className={`anim-breathe ${styles.tag}`} aria-hidden="true">
           свежая партия

@@ -2,6 +2,7 @@ import Image from "next/image";
 import deliveryPhoto from "../../../public/photos/delivery.webp";
 import hoursPhoto from "../../../public/photos/hours.webp";
 import pickupPhoto from "../../../public/photos/pickup.webp";
+import { Sketch } from "@/components/ui";
 import styles from "./Delivery.module.css";
 
 const PHOTO_SIZES = "(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 42vw";
@@ -30,6 +31,7 @@ export function Delivery() {
           />
         </div>
         <div className={styles.text}>
+          <Sketch name="scoop" parallax={0.2} className={styles.scoop} />
           <span className="eyebrow">Доставка</span>
           <p className={styles.value}>
             в <span className="heavy">пятницу</span> по&nbsp;Минску
@@ -49,6 +51,7 @@ export function Delivery() {
           />
         </div>
         <div className={styles.text}>
+          <Sketch name="cup" className={styles.cup} />
           <span className="eyebrow">Самовывоз</span>
           <p className={styles.value}>
             ул.&nbsp;<span className="heavy">Короля, 9</span>
@@ -68,6 +71,7 @@ export function Delivery() {
           />
         </div>
         <div className={styles.text}>
+          <Sketch name="berry-branch" parallax={0.3} className={styles.branch} />
           <span className="eyebrow">Часы</span>
           <p className={styles.schedule}>
             <span className="thin">пн–пт</span> <b>8:00–20:00</b>

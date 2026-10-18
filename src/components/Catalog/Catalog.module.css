@@ -16,12 +16,12 @@
   background: var(--color-bg);
 }
 
-.headingWaves {
-  left: 34%;
+.headingBeans {
+  left: 38%;
   top: 50%;
-  width: 760px;
-  height: 760px;
+  width: 820px;
   transform: translateY(-50%);
+  rotate: -8deg;
 }
 
 .title {
@@ -166,20 +166,18 @@
   background: var(--color-gold-100);
 }
 
-.ethiopiaRays {
-  right: -230px;
-  top: -250px;
-  width: 640px;
-  height: 640px;
-  --lines-speed: 200s;
+.ethiopiaSack {
+  right: -150px;
+  top: -170px;
+  width: 520px;
+  rotate: 14deg;
 }
 
-.ethiopiaZigzag {
-  left: -40px;
-  bottom: -130px;
-  width: 300px;
-  height: 300px;
-  --lines-speed: 90s;
+.ethiopiaBeans {
+  left: -60px;
+  bottom: -70px;
+  width: 320px;
+  rotate: -22deg;
 }
 
 .photoFeature {
@@ -211,27 +209,25 @@
   background: var(--color-gold-200);
 }
 
-.colombiaSquares {
-  left: -180px;
-  bottom: -200px;
+.colombiaBranch {
+  left: -60px;
+  bottom: -180px;
+  width: 300px;
+  rotate: 38deg;
+}
+
+.brazilScoop {
+  right: -140px;
+  bottom: -160px;
   width: 460px;
-  height: 460px;
-  --lines-speed: 140s;
+  rotate: -32deg;
 }
 
-.brazilWaves {
-  right: -250px;
-  bottom: -270px;
-  width: 580px;
-  height: 580px;
-}
-
-.brazilRosette {
-  left: var(--space-xl);
-  top: var(--space-xl);
-  width: 120px;
-  height: 120px;
-  --lines-speed: 40s;
+.brazilBeans {
+  left: var(--space-l);
+  top: var(--space-l);
+  width: 170px;
+  rotate: 12deg;
 }
 
 .photoTile {
@@ -263,20 +259,18 @@
   background: var(--color-gold-200);
 }
 
-.dripSpiral {
-  left: -160px;
-  top: -160px;
-  width: 400px;
-  height: 400px;
-  --lines-speed: 100s;
+.dripCup {
+  left: -150px;
+  top: -110px;
+  width: 420px;
+  rotate: -14deg;
 }
 
-.dripRays {
-  right: var(--space-s);
-  bottom: -120px;
-  width: 260px;
-  height: 260px;
-  --lines-speed: 70s;
+.dripSpoon {
+  right: -90px;
+  bottom: -40px;
+  width: 360px;
+  rotate: 28deg;
 }
 
 .photoSquare {
@@ -326,12 +320,11 @@
   border-top: var(--rule-width) solid var(--color-rule);
 }
 
-.subscriptionZigzag {
-  right: -110px;
-  top: -110px;
-  width: 280px;
-  height: 280px;
-  --lines-speed: 110s;
+.subscriptionBeans {
+  right: -150px;
+  top: -30px;
+  width: 380px;
+  rotate: 42deg;
 }
 
 /* Шаги подписки с номерами 01, 02, 03 */

@@ -3,6 +3,8 @@ import styles from "./ui.module.css";
 
 export { Logo } from "./Logo";
 export { Lines, LinesDefs } from "./Lines";
+export { Sketch } from "./Sketch";
+export type { SketchName } from "./Sketch";
 
 export function cx(...names: (string | false | null | undefined)[]) {
   return names.filter(Boolean).join(" ");

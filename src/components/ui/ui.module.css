@@ -111,6 +111,26 @@
   animation-direction: reverse;
 }
 
+/*
+ * Фоновые иллюстрации (Sketch). Как и Lines, лежат под содержимым ячейки.
+ * Цвет и прозрачность можно переопределить на месте через background-color и opacity.
+ */
+.sketch {
+  position: absolute;
+  z-index: -1;
+  display: block;
+  height: auto;
+  pointer-events: none;
+  background-color: var(--color-gold);
+  opacity: var(--deco-sketch-opacity);
+  mask-position: center;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+}
+
 /* Логотип: знак из плиток + вордмарк */
 .logo,
 .logoFooter {

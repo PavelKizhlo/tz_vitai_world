@@ -5,6 +5,7 @@
 
 .intro {
   position: relative;
+  isolation: isolate;
   container-type: inline-size;
   overflow: hidden;
   display: flex;
@@ -26,16 +27,23 @@
   object-fit: cover;
 }
 
-/* Линии поверх фото, поэтому светлые */
-.rosette {
+/* Рисунок поверх фото, поэтому светлый */
+.beans {
   z-index: 1;
-  right: -130px;
-  bottom: -130px;
-  width: 360px;
-  height: 360px;
-  stroke: var(--color-white);
-  stroke-opacity: 0.7;
-  --lines-speed: 90s;
+  right: -70px;
+  bottom: -90px;
+  width: 300px;
+  rotate: -36deg;
+  background-color: var(--color-white);
+  opacity: 0.6;
+}
+
+/* Ветка свисает из угла над заголовком */
+.leaves {
+  right: -150px;
+  top: -170px;
+  width: 440px;
+  rotate: 150deg;
 }
 
 /* Кегль ограничен шириной ячейки: «попробовать» жирным ≈ 9em и не должно обрезаться */
