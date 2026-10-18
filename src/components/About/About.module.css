@@ -1,5 +1,5 @@
 .about {
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   min-height: var(--layout-row-height);
   scroll-margin-top: var(--layout-header-height);
 }
@@ -7,24 +7,23 @@
 .figure {
   display: flex;
   flex-direction: column;
-  gap: var(--space-s);
   padding: var(--space-l);
   background: var(--color-bg);
 }
 
-/* Фото тянется на всю высоту ряда, подпись — под ним */
+/* Фото тянется на всю высоту ряда */
 .photo {
+  position: relative;
   flex-grow: 1;
   min-height: 420px;
-  padding: 20px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
 }
 
-.caption {
-  font-family: var(--font-hand);
-  font-weight: var(--fw-hand);
-  font-size: var(--fs-hand);
-  line-height: var(--lh-hand);
-  color: var(--color-ink-muted);
+/* Лица в верхней трети кадра — при обрезке держим их в слоте */
+.image {
+  object-fit: cover;
+  object-position: 50% 30%;
 }
 
 .text {
@@ -78,11 +77,20 @@
 
 @media (max-width: 1023px) {
   .about {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    min-height: 0;
   }
 
   .figure {
+    justify-content: center;
     padding: var(--space-m);
+  }
+
+  /* Колонка узкая, а текст высокий — на всю высоту фото вытянулось бы в полосу */
+  .photo {
+    flex-grow: 0;
+    min-height: 0;
+    aspect-ratio: 3 / 4;
   }
 }
 

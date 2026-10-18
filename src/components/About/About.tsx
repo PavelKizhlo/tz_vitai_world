@@ -1,4 +1,6 @@
-import { Photo, Waves } from "@/components/ui";
+import Image from "next/image";
+import { Waves } from "@/components/ui";
+import photo from "../../../public/photos/anya-dmitry.webp";
 import styles from "./About.module.css";
 
 export function About() {
@@ -10,8 +12,16 @@ export function About() {
       data-grid=""
     >
       <figure className={styles.figure}>
-        <Photo caption="фото: Аня и Дмитрий у ростера" className={styles.photo} />
-        <figcaption className={styles.caption}>аня и дмитрий, четверг утром</figcaption>
+        <div className={styles.photo}>
+          <Image
+            src={photo}
+            alt="Аня и Дмитрий за стойкой мастерской: у Ани чашка, у Дмитрия совок с зерном"
+            fill
+            placeholder="blur"
+            sizes="(max-width: 767px) 100vw, 42vw"
+            className={styles.image}
+          />
+        </div>
       </figure>
       <div className={styles.text}>
         <Waves className={styles.waves} parallax={0.15} />
