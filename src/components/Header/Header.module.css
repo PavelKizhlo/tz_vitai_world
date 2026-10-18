@@ -35,15 +35,15 @@
 }
 
 .navLink:hover {
-  color: var(--color-terracotta);
+  color: var(--color-gold);
 }
 
 .cta {
   display: flex;
   align-items: center;
   padding: 0 var(--space-l);
-  background-color: var(--color-coral);
-  color: var(--color-on-coral);
+  background-color: var(--color-navy);
+  color: var(--color-white);
   font-weight: var(--fw-text-semibold);
   font-size: var(--fs-button);
   text-decoration: none;
@@ -53,8 +53,8 @@
 }
 
 .cta:hover {
-  background-color: var(--color-coral-hover);
-  color: var(--color-on-coral);
+  background-color: var(--color-navy-hover);
+  color: var(--color-white);
   letter-spacing: var(--tracking-hover);
 }
 

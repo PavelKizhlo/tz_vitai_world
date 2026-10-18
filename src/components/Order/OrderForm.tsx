@@ -47,14 +47,16 @@ export function OrderForm() {
   if (sent) {
     return (
       <div role="status" className={styles.success}>
-        <p className={styles.successTitle}>
-          <span className="heavy">Спасибо,</span> заявка у нас
-        </p>
-        <p>Скоро позвоним, чтобы всё уточнить.</p>
+        <div className={styles.successText}>
+          <p className={styles.successTitle}>
+            <span className="heavy">Спасибо,</span> заявка у нас
+          </p>
+          <p>Скоро позвоним, чтобы всё уточнить.</p>
+        </div>
         <button
           type="button"
           onClick={reset}
-          className={buttonClass({ variant: "line", size: "sm" })}
+          className={buttonClass({ variant: "line", size: "lg", className: styles.again })}
         >
           Отправить ещё одну
         </button>
@@ -160,7 +162,7 @@ export function OrderForm() {
         </div>
       </fieldset>
 
-      <button type="submit" className={buttonClass({ variant: "coral", className: styles.submit })}>
+      <button type="submit" className={buttonClass({ variant: "primary", size: "lg" })}>
         Отправить заявку
       </button>
     </form>

@@ -1,18 +1,3 @@
-/* Геометрические фигуры-декор */
-.shape {
-  position: absolute;
-  display: block;
-  pointer-events: none;
-}
-
-.fillA {
-  fill: var(--shape-a);
-}
-
-.fillB {
-  fill: var(--shape-b);
-}
-
 /* Плейсхолдер фото */
 .photo {
   position: relative;
@@ -21,22 +6,20 @@
   justify-content: center;
   padding: calc(var(--space-xs) * 2);
   border: var(--rule-width) dashed var(--color-line-strong);
-  border-radius: var(--radius-lg);
   background: repeating-linear-gradient(
     135deg,
     var(--photo-a) 0 var(--deco-stripe),
     var(--color-line) var(--deco-stripe) calc(var(--deco-stripe) * 2)
   );
-  --photo-a: var(--color-surface-300);
+  --photo-a: var(--color-gold-200);
 }
 
 .photoAlt {
-  --photo-a: var(--color-surface-200);
+  --photo-a: var(--color-gold-100);
 }
 
 .photoCaption {
   padding: 2px var(--space-xs);
-  border-radius: var(--radius-sm);
   background: var(--photo-a);
   color: var(--color-ink-muted);
   font-size: var(--fs-body-sm);
@@ -48,7 +31,6 @@
 .badge {
   align-self: flex-start;
   padding: 3px var(--space-xs);
-  border-radius: var(--radius-sm);
   font-size: var(--fs-badge);
   line-height: var(--lh-label);
   font-weight: var(--fw-text-semibold);
@@ -57,18 +39,18 @@
   color: var(--color-ink);
 }
 
-.badgeSage {
-  background: var(--color-sage);
-  color: var(--color-on-support);
+.badgeNavy {
+  background: var(--color-navy);
+  color: var(--color-white);
 }
 
-.badgeCoral {
-  background: var(--color-coral-soft);
-  color: var(--color-on-coral);
+.badgeGold {
+  background: var(--color-gold-200);
+  color: var(--color-ink);
 }
 
 .badgeNeutral {
-  background: var(--color-surface-300);
+  background: var(--color-gold-200);
 }
 
 /* Цена */
@@ -77,7 +59,7 @@
   font-weight: var(--fw-display-bold);
   font-size: var(--fs-price-l);
   line-height: var(--lh-ui);
-  color: var(--color-terracotta);
+  color: var(--color-gold);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -93,33 +75,40 @@
   letter-spacing: var(--tracking-currency);
 }
 
-/* Контурные волны */
-.waves {
+/*
+ * Вращающиеся линии (Lines). Лежат под содержимым ячейки, поэтому ячейке нужен isolation: isolate.
+ * Скорость можно задать на месте через --lines-speed.
+ */
+.lines {
   position: absolute;
   z-index: -1;
   pointer-events: none;
   fill: none;
-  stroke: var(--color-coral);
-  stroke-opacity: var(--deco-waves-opacity);
-  stroke-width: var(--deco-waves-stroke);
+  stroke: var(--color-gold);
+  stroke-opacity: var(--deco-lines-opacity);
+  stroke-width: var(--deco-lines-stroke);
 }
 
-.waves path {
+.lines path {
   vector-effect: non-scaling-stroke;
 }
 
-.wavesGroup {
+.linesGroup {
   transform-origin: 500px 500px;
 }
 
-@keyframes wavesSpin {
+@keyframes linesSpin {
   to {
     transform: rotate(360deg);
   }
 }
 
-:global(:root:not([data-motion="off"])) .wavesGroup {
-  animation: wavesSpin var(--motion-waves) linear infinite;
+:global(:root:not([data-motion="off"])) .linesGroup {
+  animation: linesSpin var(--lines-speed, var(--motion-lines)) linear infinite;
+}
+
+.linesReverse .linesGroup {
+  animation-direction: reverse;
 }
 
 /* Логотип: знак из плиток + вордмарк */
@@ -135,57 +124,33 @@
   height: var(--layout-logo-footer-height);
 }
 
-.logoCoral {
-  fill: var(--color-coral);
+/* Плитки знака в шахматном порядке: синий и охра, вставки белые */
+.logoNavy {
+  fill: var(--color-navy);
 }
 
-.logoOchre {
-  fill: var(--color-ochre);
+.logoGold {
+  fill: var(--color-gold);
 }
 
-.logoDenim {
-  fill: var(--color-denim);
+.logoInset {
+  fill: var(--color-white);
 }
 
-.logoSage {
-  fill: var(--color-sage);
-}
-
-.logoBean {
-  fill: var(--color-logo-bean);
-}
-
-.logoQuarter {
-  fill: var(--color-logo-quarter);
-}
-
-.logoLens {
-  fill: var(--color-logo-lens);
-}
-
-.logoBeanLine,
-.logoLensLine,
+.logoInsetLine,
 .logoMarkLetter,
 .logoLetter {
   fill: none;
 }
 
-.logoBeanLine,
-.logoLensLine {
+.logoInsetLine {
+  stroke: var(--color-navy);
   stroke-width: 5;
   stroke-linecap: round;
 }
 
-.logoBeanLine {
-  stroke: var(--color-coral);
-}
-
-.logoLensLine {
-  stroke: var(--color-sage);
-}
-
 .logoMarkLetter {
-  stroke: var(--color-surface-100);
+  stroke: var(--color-white);
   stroke-width: 22;
 }
 

@@ -7,25 +7,19 @@ import { useOrder } from "./OrderContext";
 
 type AddToOrderProps = {
   product: ProductId;
-  size?: "md" | "sm";
-  filled?: boolean;
+  className?: string;
   children?: ReactNode;
 };
 
 /** Ссылка на форму заявки, заодно отмечает товар в форме */
-export function AddToOrder({
-  product,
-  size = "md",
-  filled,
-  children = "В заявку",
-}: AddToOrderProps) {
+export function AddToOrder({ product, className, children = "В заявку" }: AddToOrderProps) {
   const { add } = useOrder();
 
   return (
     <a
       href="#order"
       onClick={() => add(product)}
-      className={buttonClass({ variant: "line", size, filled })}
+      className={buttonClass({ variant: "line", className })}
     >
       {children}
     </a>

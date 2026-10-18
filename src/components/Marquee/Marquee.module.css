@@ -1,7 +1,7 @@
 .marquee {
   overflow: hidden;
-  background: var(--color-denim);
-  color: var(--color-on-support);
+  background: var(--color-navy);
+  color: var(--color-white);
   border-bottom: var(--rule-width) solid var(--color-rule);
 }
 
@@ -28,7 +28,7 @@
 }
 
 .dot {
-  color: var(--color-ochre);
+  color: var(--color-gold);
 }
 
 @keyframes marquee {

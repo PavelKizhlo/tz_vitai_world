@@ -19,7 +19,7 @@ type LogoProps = {
 
 /**
  * Логотип: знак из четырёх плиток (зерно, четверть, «К», «линза») и вордмарк.
- * Цвета плиток — токены, буквы вордмарка — currentColor.
+ * Плитки — синий и охра в шахматном порядке, буквы вордмарка — currentColor.
  * Исходники для экспорта лежат в public/logo.
  */
 export function Logo({ variant = "header", label }: LogoProps) {
@@ -40,22 +40,22 @@ export function Logo({ variant = "header", label }: LogoProps) {
       </defs>
 
       {/* Знак */}
-      <rect width="80" height="80" className={styles.logoCoral} />
+      <rect width="80" height="80" className={styles.logoNavy} />
       <g transform="rotate(35 40 40)">
-        <ellipse cx="40" cy="40" rx="24" ry="35" className={styles.logoBean} />
-        <path d="M40 7C29 27 51 53 40 73" className={styles.logoBeanLine} />
+        <ellipse cx="40" cy="40" rx="24" ry="35" className={styles.logoInset} />
+        <path d="M40 7C29 27 51 53 40 73" className={styles.logoInsetLine} />
       </g>
-      <rect x="80" width="80" height="80" className={styles.logoOchre} />
-      <path d="M160 0V80A80 80 0 0 1 80 0Z" className={styles.logoQuarter} />
-      <rect y="80" width="80" height="80" className={styles.logoDenim} />
+      <rect x="80" width="80" height="80" className={styles.logoGold} />
+      <path d="M160 0V80A80 80 0 0 1 80 0Z" className={styles.logoInset} />
+      <rect y="80" width="80" height="80" className={styles.logoGold} />
       <g transform="translate(15 85) scale(0.5)">
         <g clipPath={clip}>
           <path d={LETTERS[0]} className={styles.logoMarkLetter} />
         </g>
       </g>
-      <rect x="80" y="80" width="80" height="80" className={styles.logoSage} />
-      <path d="M85 155A76 76 0 0 1 155 85A76 76 0 0 1 85 155Z" className={styles.logoLens} />
-      <path d="M95 145C114 137 126 103 145 95" className={styles.logoLensLine} />
+      <rect x="80" y="80" width="80" height="80" className={styles.logoNavy} />
+      <path d="M85 155A76 76 0 0 1 155 85A76 76 0 0 1 85 155Z" className={styles.logoInset} />
+      <path d="M95 145C114 137 126 103 145 95" className={styles.logoInsetLine} />
 
       {/* Вордмарк */}
       {LETTERS.map((d, i) => (

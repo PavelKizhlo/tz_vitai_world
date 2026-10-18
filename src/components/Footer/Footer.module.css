@@ -1,10 +1,33 @@
 .footer {
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(0, 5fr) minmax(0, 4fr);
+  position: relative;
   /* Плашка во всю ширину, содержимое — в контейнере, как у рядов сетки */
   padding-inline: var(--layout-side);
-  background: var(--color-denim);
-  color: var(--color-on-support);
+  background: var(--color-white);
+  color: var(--color-ink);
+}
+
+/* Края контейнера, как у рядов .ruled; видны, только когда экран шире контейнера */
+@media (min-width: 1441px) {
+  .footer::before,
+  .footer::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: var(--rule-width);
+    background: var(--color-rule);
+    pointer-events: none;
+  }
+
+  .footer::before {
+    left: calc(var(--layout-side) - var(--rule-width));
+  }
+
+  .footer::after {
+    right: calc(var(--layout-side) - var(--rule-width));
+  }
 }
 
 .brand,
@@ -39,17 +62,17 @@
   justify-content: center;
   width: var(--control-height-sm);
   height: var(--control-height-sm);
-  border: var(--control-border-width) solid var(--color-on-support);
-  border-radius: var(--radius-md);
-  color: var(--color-on-support);
+  border: var(--control-border-width) solid var(--color-line-strong);
+  color: var(--color-ink);
   transition:
     background-color 0.2s,
     color 0.2s;
 }
 
 .social:hover {
-  background: var(--color-on-support);
-  color: var(--color-denim);
+  border-color: var(--color-navy);
+  background: var(--color-navy);
+  color: var(--color-white);
 }
 
 .icon {
@@ -66,9 +89,12 @@
   stroke: none;
 }
 
-.link,
+.link {
+  color: var(--color-ink);
+}
+
 .link:hover {
-  color: var(--color-on-support);
+  color: var(--color-gold-deep);
 }
 
 @media (max-width: 1023px) {

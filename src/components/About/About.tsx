@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Waves } from "@/components/ui";
+import { Lines } from "@/components/ui";
 import photo from "../../../public/photos/anya-dmitry.webp";
 import styles from "./About.module.css";
 
@@ -24,7 +24,7 @@ export function About() {
         </div>
       </figure>
       <div className={styles.text}>
-        <Waves className={styles.waves} parallax={0.15} />
+        <Lines kind="waves" className={styles.waves} parallax={0.15} />
         <span className="eyebrow">Кто жарит</span>
         <h2 id="about-title" className={styles.title} data-split="" data-split-by="words">
           <span className="heavy">Аня</span>

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Shape } from "@/components/ui";
+import { Lines } from "@/components/ui";
 import phonePhoto from "../../../public/photos/order-phone.webp";
 import { OrderForm } from "./OrderForm";
 import styles from "./Order.module.css";
@@ -29,8 +29,7 @@ export function Order() {
           sizes="(max-width: 1023px) 100vw, 58vw"
           className={styles.image}
         />
-        {/* Четверть круга заходит на угол фото, не задевая текст */}
-        <Shape kind="quarter" colors={["dusty-blue"]} parallax={0.2} className={styles.quarter} />
+        <Lines kind="rosette" reverse parallax={0.2} className={styles.rosette} />
       </div>
       <div className={styles.formCell}>
         <OrderForm />

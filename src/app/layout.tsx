@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#fbf5ec",
+  themeColor: "#ffffff",
 };
 
 const FX_PENDING = `if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.dataset.fxPending = "";`;

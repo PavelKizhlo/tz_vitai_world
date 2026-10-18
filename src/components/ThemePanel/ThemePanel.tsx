@@ -132,7 +132,7 @@ export function ThemePanel() {
         <input
           type="search"
           className={styles.search}
-          placeholder="Поиск: coral, space, 16px…"
+          placeholder="Поиск: navy, space, 16px…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           aria-label="Поиск токена"

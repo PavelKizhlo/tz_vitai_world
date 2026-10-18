@@ -5,44 +5,25 @@
  * Панель темы (ThemePanel) сама находит все переменные из этого блока.
  */
 :root {
-  /* Цвета: поверхности */
-  --color-surface-100: #fbf5ec;
-  --color-surface-200: #f4e9da;
-  --color-surface-300: #ebddc8;
-  --color-surface-peach: #f7dfcf;
-
-  /* Цвета: текст и линии */
-  --color-ink: #2e2620;
-  --color-ink-muted: #6b5a4c;
-  --color-line: #e2d3be;
-  --color-line-strong: #8c7660;
-
-  /* Цвета: акценты */
-  --color-coral: #ee6a4f;
-  --color-coral-hover: #f27f64;
-  --color-coral-soft: #fad3c6;
-  --color-on-coral: var(--color-ink);
-  --color-terracotta: #b5442a;
-  --color-electric: #3050d0;
-  --color-electric-hover: #2a45b0;
-  --color-on-electric: var(--color-surface-100);
-
-  /* Цвета: вспомогательные */
-  --color-sage: #5c7048;
-  --color-denim: #3f4e80;
-  --color-ochre: #e3a53c;
-  --color-dusty-blue: #a9bfc4;
-  --color-on-support: var(--color-surface-100);
-
-  /* Цвета: светлые вставки в знаке логотипа */
-  --color-logo-bean: #fde6de;
-  --color-logo-quarter: #fbefd6;
-  --color-logo-lens: #dfe6d4;
+  /* Цвета: палитра — синий, охра и белый */
+  --color-white: #ffffff;
+  --color-navy: #1c2b5f;
+  --color-navy-hover: #2d3f7f;
+  --color-navy-muted: #5d6790;
+  --color-gold: #9c8659;
+  --color-gold-deep: #7a6741;
+  --color-gold-100: #f7f4ee;
+  --color-gold-200: #ede6d8;
+  --color-gold-300: #ddd1b9;
 
   /* Цвета: семантика */
-  --color-bg: var(--color-surface-100);
+  --color-bg: var(--color-white);
+  --color-ink: var(--color-navy);
+  --color-ink-muted: var(--color-navy-muted);
+  --color-line: var(--color-gold-200);
+  --color-line-strong: var(--color-gold);
   --color-rule: var(--color-line-strong);
-  --color-focus: var(--color-electric);
+  --color-focus: var(--color-gold);
 
   /* Шрифты (--nf-* объявляет next/font в layout.tsx) */
   --font-display: var(--nf-unbounded), "Trebuchet MS", system-ui, sans-serif;
@@ -120,22 +101,15 @@
   --space-section: clamp(var(--space-xl), 7vw, var(--space-3xl));
   --space-card: clamp(var(--space-l), 4vw, calc(var(--space-l) * 2));
 
-  /* Скругления */
-  --radius-none: 0px;
-  --radius-sm: 2px;
-  --radius-md: 4px;
-  --radius-lg: 5px;
-
   /* Линии и тени */
   --rule-width: 1px;
   --shadow-none: none;
   --shadow-header: 0 1px 0 var(--color-line);
 
   /* Кнопки и поля */
-  --control-height: 52px;
+  --control-height: 88px;
+  --control-height-lg: 112px;
   --control-height-sm: 44px;
-  --control-padding-x: 28px;
-  --control-padding-x-sm: 18px;
   --control-border-width: 1px;
 
   /* Сетка и размеры блоков */
@@ -146,14 +120,16 @@
   --layout-logo-height: 36px;
   --layout-logo-footer-height: 56px;
   --layout-row-height: calc(100svh - var(--layout-header-height));
+  /* Ряд карточек каталога — ниже экрана, чтобы следующий ряд выглядывал снизу */
+  --layout-card-row-height: clamp(520px, 70svh, 720px);
   --layout-hero-min-height: 600px;
-  --layout-media-min-height: 480px;
-  --layout-tile-media-height: 380px;
+  --layout-media-min-height: 420px;
+  --layout-tile-media-height: 320px;
   --layout-text-max: 26em;
 
   /* Декор */
-  --deco-waves-opacity: 0.34;
-  --deco-waves-stroke: 1.5;
+  --deco-lines-opacity: 0.34;
+  --deco-lines-stroke: 1.5;
   --deco-stripe: 14px;
 
   /* Анимация */
@@ -161,7 +137,7 @@
   --motion-marquee: 40s;
   --motion-bob: 5s;
   --motion-breathe: 6s;
-  --motion-waves: 160s;
+  --motion-lines: 160s;
 }
 
 *,
@@ -192,11 +168,11 @@ body {
 }
 
 a {
-  color: var(--color-electric);
+  color: var(--color-navy);
 }
 
 a:hover {
-  color: var(--color-electric-hover);
+  color: var(--color-gold-deep);
 }
 
 :focus-visible {
@@ -312,15 +288,6 @@ input {
   }
 }
 
-@keyframes anim-spin {
-  from {
-    transform: rotate(-120deg);
-  }
-  to {
-    transform: rotate(120deg);
-  }
-}
-
 @keyframes anim-slide {
   from {
     transform: translateX(-30%);
@@ -339,12 +306,6 @@ input {
 }
 
 @supports (animation-timeline: view()) {
-  :root:not([data-motion="off"]) .anim-spin {
-    animation: anim-spin linear both;
-    animation-timeline: view();
-    animation-range: cover 0% cover 100%;
-  }
-
   :root:not([data-motion="off"]) .anim-slide {
     animation: anim-slide linear both;
     animation-timeline: view();
@@ -379,7 +340,7 @@ html.lenis {
   scroll-behavior: auto;
 }
 
-/* Свойство translate складывается с transform, поэтому не мешает CSS-анимациям фигур */
+/* Свойство translate складывается с transform, поэтому не мешает CSS-анимации волн */
 [data-parallax] {
   translate: 0 var(--parallax, 0px);
 }

@@ -5,20 +5,13 @@ const SIZE = 2048;
 
 // Токены из src/app/globals.css
 const C = {
-  surface100: "#fbf5ec",
-  surface300: "#ebddc8",
-  ink: "#2e2620",
-  inkMuted: "#6b5a4c",
-  coral: "#ee6a4f",
-  coralSoft: "#fad3c6",
-  terracotta: "#b5442a",
-  sage: "#5c7048",
-  denim: "#3f4e80",
-  ochre: "#e3a53c",
-  dustyBlue: "#a9bfc4",
-  logoBean: "#fde6de",
-  logoQuarter: "#fbefd6",
-  logoLens: "#dfe6d4",
+  white: "#ffffff",
+  navy: "#1c2b5f",
+  navyMuted: "#5d6790",
+  gold: "#9c8659",
+  goldDeep: "#7a6741",
+  gold100: "#f7f4ee",
+  gold200: "#ede6d8",
 };
 
 /** Шрифты из fonts.mjs и рамки граней из models.mjs — задаются в renderLabels */
@@ -55,7 +48,7 @@ function pathData(path) {
 /** anchor: start | middle | end; tracking в em; maxWidth уменьшает кегль, если строка не влезает */
 function text(
   str,
-  { font, size, x = 0, y = 0, anchor = "start", fill = C.ink, tracking = 0, maxWidth, rotate = 0 },
+  { font, size, x = 0, y = 0, anchor = "start", fill = C.navy, tracking = 0, maxWidth, rotate = 0 },
 ) {
   let s = size;
   if (maxWidth) s = Math.min(s, (size * maxWidth) / measure(font, str, size, tracking));
@@ -86,23 +79,25 @@ const LETTERS = [
 ];
 const CLIP = `<clipPath id="lc"><rect width="100" height="140"/></clipPath>`;
 
-/** Знак 2×2 плитки, левый верхний угол в (x, y), сторона size */
-function mark(x, y, size) {
+/** Знак 2×2 плитки, левый верхний угол в (x, y), сторона size; на синем фоне синие плитки белеют */
+function mark(x, y, size, bg) {
+  const tile = bg === C.navy ? C.white : C.navy;
+  const inset = bg === C.navy ? C.gold200 : C.white;
   return `<g transform="translate(${x} ${y}) scale(${size / 160})">
-    <rect width="80" height="80" fill="${C.coral}"/>
+    <rect width="80" height="80" fill="${tile}"/>
     <g transform="rotate(35 40 40)">
-      <ellipse cx="40" cy="40" rx="24" ry="35" fill="${C.logoBean}"/>
-      <path d="M40 7C29 27 51 53 40 73" fill="none" stroke="${C.coral}" stroke-width="5" stroke-linecap="round"/>
+      <ellipse cx="40" cy="40" rx="24" ry="35" fill="${inset}"/>
+      <path d="M40 7C29 27 51 53 40 73" fill="none" stroke="${C.navy}" stroke-width="5" stroke-linecap="round"/>
     </g>
-    <rect x="80" width="80" height="80" fill="${C.ochre}"/>
-    <path d="M160 0V80A80 80 0 0 1 80 0Z" fill="${C.logoQuarter}"/>
-    <rect y="80" width="80" height="80" fill="${C.denim}"/>
+    <rect x="80" width="80" height="80" fill="${C.gold}"/>
+    <path d="M160 0V80A80 80 0 0 1 80 0Z" fill="${C.white}"/>
+    <rect y="80" width="80" height="80" fill="${C.gold}"/>
     <g transform="translate(15 85) scale(0.5)"><g clip-path="url(#lc)">
-      <path d="${LETTERS[0]}" fill="none" stroke="${C.surface100}" stroke-width="22"/>
+      <path d="${LETTERS[0]}" fill="none" stroke="${C.white}" stroke-width="22"/>
     </g></g>
-    <rect x="80" y="80" width="80" height="80" fill="${C.sage}"/>
-    <path d="M85 155A76 76 0 0 1 155 85A76 76 0 0 1 85 155Z" fill="${C.logoLens}"/>
-    <path d="M95 145C114 137 126 103 145 95" fill="none" stroke="${C.sage}" stroke-width="5" stroke-linecap="round"/>
+    <rect x="80" y="80" width="80" height="80" fill="${tile}"/>
+    <path d="M85 155A76 76 0 0 1 155 85A76 76 0 0 1 85 155Z" fill="${inset}"/>
+    <path d="M95 145C114 137 126 103 145 95" fill="none" stroke="${C.navy}" stroke-width="5" stroke-linecap="round"/>
   </g>`;
 }
 
@@ -157,33 +152,33 @@ const BAGS = {
     origin: "Иргачеффе",
     notes: "цветочный, бергамот",
     badge: "светлая обжарка",
-    body: C.sage,
+    body: C.gold,
     art: (cx, top, w) =>
-      rect(cx - w / 2, top, w, 3.6, C.dustyBlue, 0.12) +
-      circle(cx + 1.4, top + 1.5, 1.05, C.ochre) +
-      `<g clip-path="url(#art)">${half(cx - 1.2, top + 3.6, 2.2, C.surface100)}${half(cx + 2.6, top + 3.6, 1.3, C.sage)}</g>`,
+      rect(cx - w / 2, top, w, 3.6, C.navy, 0.12) +
+      circle(cx + 1.4, top + 1.5, 1.05, C.gold) +
+      `<g clip-path="url(#art)">${half(cx - 1.2, top + 3.6, 2.2, C.white)}${half(cx + 2.6, top + 3.6, 1.3, C.gold200)}</g>`,
   },
   colombia: {
     name: "Колумбия",
     origin: "Уила",
     notes: "карамель, красное яблоко",
-    body: C.coral,
+    body: C.goldDeep,
     art: (cx, top, w) =>
-      rect(cx - w / 2, top, w, 3.6, C.coralSoft, 0.12) +
-      circle(cx - 2.1, top + 1.3, 0.75, C.terracotta) +
-      `<g clip-path="url(#art)">${half(cx + 0.6, top + 3.6, 2.5, C.coral)}${half(cx - 3.2, top + 3.6, 1.1, C.ochre)}</g>`,
+      rect(cx - w / 2, top, w, 3.6, C.gold100, 0.12) +
+      circle(cx - 2.1, top + 1.3, 0.75, C.goldDeep) +
+      `<g clip-path="url(#art)">${half(cx + 0.6, top + 3.6, 2.5, C.navy)}${half(cx - 3.2, top + 3.6, 1.1, C.gold)}</g>`,
   },
   brazil: {
     name: "Бразилия",
     origin: "Серрадо",
     notes: "орех, шоколад",
     badge: "под эспрессо",
-    body: C.denim,
+    body: C.navy,
     art: (cx, top, w) =>
-      rect(cx - w / 2, top, w, 3.6, C.surface300, 0.12) +
-      `<g clip-path="url(#art)">${quarter(cx - w / 2, top, 3, C.denim)}</g>` +
-      circle(cx + 2.1, top + 2.2, 0.85, C.coral) +
-      circle(cx + 0.4, top + 1.1, 0.35, C.ochre),
+      rect(cx - w / 2, top, w, 3.6, C.gold200, 0.12) +
+      `<g clip-path="url(#art)">${quarter(cx - w / 2, top, 3, C.navy)}</g>` +
+      circle(cx + 2.1, top + 2.2, 0.85, C.gold) +
+      circle(cx + 0.4, top + 1.1, 0.35, C.goldDeep),
   },
 };
 
@@ -199,9 +194,9 @@ function bagFront(p) {
     const artW = panelW - 1.4;
     const bottom = panelTop + panelH;
     return [
-      wordmark(cx, 5.0, 1.0, C.surface100),
+      wordmark(cx, 5.0, 1.0, C.white),
       `<clipPath id="art"><rect x="${cx - artW / 2}" y="${artTop}" width="${artW}" height="3.6" rx="0.12"/></clipPath>`,
-      rect(panelX, panelTop, panelW, panelH, C.surface100, 0.15),
+      rect(panelX, panelTop, panelW, panelH, C.white, 0.15),
       p.art(cx, artTop, artW),
       text(p.name.toUpperCase(), {
         font: F.display,
@@ -218,9 +213,9 @@ function bagFront(p) {
         y: panelTop + 7.6,
         anchor: "middle",
         tracking: 0.18,
-        fill: C.inkMuted,
+        fill: C.navyMuted,
       }),
-      rect(panelX + 0.7, panelTop + 8.35, artW, 0.04, C.ink),
+      rect(panelX + 0.7, panelTop + 8.35, artW, 0.04, C.navy),
       text(p.notes, {
         font: F.text,
         size: 0.62,
@@ -237,7 +232,7 @@ function bagFront(p) {
             y: panelTop + 10.4,
             anchor: "middle",
             tracking: 0.14,
-            fill: C.inkMuted,
+            fill: C.navyMuted,
           })
         : "",
       text("250 г", { font: F.displayMed, size: 0.62, x: panelX + 0.7, y: bottom - 0.75 }),
@@ -246,7 +241,7 @@ function bagFront(p) {
         size: 0.48,
         x: panelX + 1.0 + measure(F.displayMed, "250 г", 0.62),
         y: bottom - 0.75,
-        fill: C.inkMuted,
+        fill: C.navyMuted,
       }),
       text("обжарено в четверг", {
         font: F.hand,
@@ -254,7 +249,7 @@ function bagFront(p) {
         x: panelX + panelW - 0.6,
         y: bottom - 0.7,
         anchor: "end",
-        fill: C.terracotta,
+        fill: C.goldDeep,
         rotate: -4,
       }),
       text("свежая партия", {
@@ -263,7 +258,7 @@ function bagFront(p) {
         x: cx,
         y: bottom + 1.25,
         anchor: "middle",
-        fill: C.surface100,
+        fill: C.white,
       }),
     ].join("");
   };
@@ -282,8 +277,8 @@ function bagBack(p) {
       ["развозим по городу.", F.text],
     ];
     return [
-      mark(w / 2 - 1.3, 3.0, 2.6),
-      rect(x, top, pw, 10.0, C.surface100, 0.15),
+      mark(w / 2 - 1.3, 3.0, 2.6, p.body),
+      rect(x, top, pw, 10.0, C.white, 0.15),
       text(`${p.name} · ${p.origin}`.toUpperCase(), {
         font: F.display,
         size: 0.62,
@@ -294,13 +289,13 @@ function bagBack(p) {
       ...lines.map(([s, font], i) =>
         text(s, { font, size: 0.52, x: x + 0.7, y: top + 2.8 + i * 0.8, maxWidth: inner }),
       ),
-      rect(x + 0.7, top + 6.2, inner, 0.04, C.ink),
+      rect(x + 0.7, top + 6.2, inner, 0.04, C.navy),
       text("Дата обжарки", {
         font: F.textSemi,
         size: 0.46,
         x: x + 0.7,
         y: top + 7.3,
-        fill: C.inkMuted,
+        fill: C.navyMuted,
         tracking: 0.08,
       }),
       text("четверг", {
@@ -308,7 +303,7 @@ function bagBack(p) {
         size: 1.1,
         x: x + 0.7,
         y: top + 8.6,
-        fill: C.terracotta,
+        fill: C.goldDeep,
         rotate: -3,
       }),
       text("ул. Короля, 9", {
@@ -317,7 +312,7 @@ function bagBack(p) {
         x: x + pw - 0.7,
         y: top + 7.3,
         anchor: "end",
-        fill: C.inkMuted,
+        fill: C.navyMuted,
       }),
       text("250 г", {
         font: F.displayMed,
@@ -332,7 +327,7 @@ function bagBack(p) {
         x: w / 2,
         y: top + 11.3,
         anchor: "middle",
-        fill: C.surface100,
+        fill: C.white,
         maxWidth: w - 3,
       }),
     ].join("");
@@ -342,15 +337,15 @@ function bagBack(p) {
 /** Боковая складка: вордмарк вдоль высоты */
 function bagSide(p) {
   return (w, h) =>
-    rect(w / 2 - 0.9, 0, 1.8, h, C.surface100) + wordmark(w / 2 + 0.45, h * 0.52, 0.9, p.body, -90);
+    rect(w / 2 - 0.9, 0, 1.8, h, C.white) + wordmark(w / 2 + 0.45, h * 0.52, 0.9, p.body, -90);
 }
 
 /* ---------- Коробка дрип-пакетов ---------- */
 
 const VARIETIES = [
-  ["Эфиопия", C.sage],
-  ["Колумбия", C.coral],
-  ["Бразилия", C.denim],
+  ["Эфиопия", C.gold],
+  ["Колумбия", C.goldDeep],
+  ["Бразилия", C.navy],
 ];
 
 function boxFront(w, h) {
@@ -365,7 +360,7 @@ function boxFront(w, h) {
       x: tx,
       y: 0.75,
       tracking: 0.16,
-      fill: C.inkMuted,
+      fill: C.navyMuted,
     }),
     ...VARIETIES.map(
       ([name, color], i) =>
@@ -378,7 +373,7 @@ function boxFront(w, h) {
       x: w - 0.16,
       y: h - 0.14,
       anchor: "end",
-      fill: C.terracotta,
+      fill: C.goldDeep,
       rotate: -4,
     }),
   ].join("");
@@ -397,7 +392,7 @@ function boxBack(w, h) {
           x: 0.37,
           y: 0.79 + i * 0.32,
           anchor: "middle",
-          fill: C.surface100,
+          fill: C.white,
         }) +
         text(s, { font: F.text, size: 0.13, x: 0.6, y: 0.8 + i * 0.32, maxWidth: w - 0.85 }),
     ),
@@ -406,7 +401,7 @@ function boxBack(w, h) {
       size: 0.09,
       x: 0.25,
       y: h - 0.2,
-      fill: C.inkMuted,
+      fill: C.navyMuted,
       maxWidth: w - 0.5,
     }),
   ].join("");
@@ -416,7 +411,7 @@ function boxTop(w, h) {
   const stripe = h / 3;
   return [
     ...VARIETIES.map(([, color], i) => rect(0, i * stripe, 0.35, stripe, color)),
-    wordmark(w / 2 + 0.17, h / 2 - 0.16, 0.32, C.ink),
+    wordmark(w / 2 + 0.17, h / 2 - 0.16, 0.32, C.navy),
   ].join("");
 }
 
@@ -424,7 +419,7 @@ function boxEnd(w, h) {
   const band = 0.35;
   return [
     ...VARIETIES.map(([, color], i) => rect(0, h - band + (i * band) / 3, w, band / 3, color)),
-    wordmark(w / 2, h / 2 - 0.35, 0.18, C.ink),
+    wordmark(w / 2, h / 2 - 0.35, 0.18, C.navy),
     text("10 шт", { font: F.displayMed, size: 0.16, x: w / 2, y: h / 2 + 0.25, anchor: "middle" }),
   ].join("");
 }
@@ -456,6 +451,6 @@ export async function renderLabels({ frames: faceFrames, fonts, outDir }) {
       face("box", "+X", boxEnd),
       face("box", "-X", boxEnd),
     ],
-    C.surface100,
+    C.white,
   );
 }

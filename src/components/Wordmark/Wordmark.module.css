@@ -16,7 +16,7 @@
 
 .arrowCell {
   padding: var(--space-m) 0;
-  background: var(--color-surface-200);
+  background: var(--color-gold-100);
 }
 
 .arrow {
@@ -83,8 +83,8 @@
 }
 
 .backAccent {
-  background: var(--color-coral);
-  color: var(--color-on-coral);
+  background: var(--color-navy);
+  color: var(--color-white);
 }
 
 .heavy {
