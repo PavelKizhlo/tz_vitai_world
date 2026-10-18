@@ -1,5 +1,6 @@
 .order {
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  min-height: var(--layout-row-height);
   scroll-margin-top: var(--layout-header-height);
 }
 
@@ -34,6 +35,9 @@
 }
 
 .formCell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   padding: clamp(40px, 5vw, 80px) var(--space-gutter);
   background: var(--color-bg);
 }
@@ -175,6 +179,10 @@
 }
 
 @media (max-width: 767px) {
+  .order {
+    min-height: 0;
+  }
+
   .intro {
     gap: var(--space-s);
     padding: var(--space-2xl) var(--space-m) var(--space-3xl);

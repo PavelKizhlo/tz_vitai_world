@@ -2,7 +2,12 @@ import styles from "./Delivery.module.css";
 
 export function Delivery() {
   return (
-    <section id="delivery" className={`ruled ${styles.delivery}`} aria-label="Доставка и самовывоз">
+    <section
+      id="delivery"
+      className={`ruled ${styles.delivery}`}
+      aria-label="Доставка и самовывоз"
+      data-grid=""
+    >
       <div className={styles.cell}>
         <span className="eyebrow">Доставка</span>
         <p className={styles.value}>

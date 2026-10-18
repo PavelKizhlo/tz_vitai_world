@@ -27,9 +27,19 @@ export const viewport: Viewport = {
   themeColor: "#fbf5ec",
 };
 
+const FX_PENDING = `if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.dataset.fxPending = "";`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ru" className={`${unbounded.variable} ${onest.variable} ${caveat.variable}`}>
+    <html
+      lang="ru"
+      className={`${unbounded.variable} ${onest.variable} ${caveat.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        {/* Прячем hero до старта интро (Motion/ScrollScenes), чтобы он не мигнул до анимации */}
+        <script dangerouslySetInnerHTML={{ __html: FX_PENDING }} />
+      </head>
       <body>{children}</body>
     </html>
   );

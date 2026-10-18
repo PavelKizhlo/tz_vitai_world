@@ -27,11 +27,13 @@ type ShapeProps = {
   kind: ShapeKind;
   colors: [ColorToken] | [ColorToken, ColorToken];
   motion?: "spin" | "slide";
+  /** Скорость параллакса при скролле, доля от 1 (см. Motion/ScrollScenes) */
+  parallax?: number;
   className?: string;
 };
 
 /** Плоская фигура-декор; положение и размер задаёт className родителя */
-export function Shape({ kind, colors, motion = "spin", className }: ShapeProps) {
+export function Shape({ kind, colors, motion = "spin", parallax, className }: ShapeProps) {
   const [a, b = a] = colors;
   const style = { "--shape-a": color(a), "--shape-b": color(b) } as CSSProperties;
   const motionClass = motion === "spin" ? "anim-spin" : "anim-slide";
@@ -42,6 +44,7 @@ export function Shape({ kind, colors, motion = "spin", className }: ShapeProps) 
       viewBox={kind === "halves-row" ? "0 0 200 100" : "0 0 100 100"}
       className={cx(styles.shape, motionClass, className)}
       style={style}
+      data-parallax={parallax}
     >
       {kind === "quarter" && <path className={styles.fillA} d="M0 0 H100 A100 100 0 0 1 0 100 Z" />}
       {kind === "half" && <path className={styles.fillA} d="M0 100 A50 50 0 0 1 100 100 Z" />}
@@ -130,9 +133,14 @@ export function WavesDefs() {
   );
 }
 
-export function Waves({ className }: { className?: string }) {
+export function Waves({ className, parallax }: { className?: string; parallax?: number }) {
   return (
-    <svg aria-hidden="true" viewBox="0 0 1000 1000" className={cx(styles.waves, className)}>
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 1000 1000"
+      className={cx(styles.waves, className)}
+      data-parallax={parallax}
+    >
       <g className={styles.wavesGroup}>
         <use href={`#${WAVES_ID}`} />
       </g>

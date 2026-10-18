@@ -33,10 +33,6 @@
 }
 
 /* Общие части карточек */
-.card {
-  background: var(--color-bg);
-}
-
 .media {
   position: relative;
   overflow: hidden;
@@ -113,6 +109,19 @@
   color: var(--color-ink-muted);
 }
 
+/* Описание товара под нотами вкуса */
+.description {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  max-width: var(--layout-text-max);
+}
+
+.descriptionSm {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
 .buy {
   display: flex;
   flex-wrap: wrap;
@@ -121,10 +130,16 @@
   margin-top: var(--space-s);
 }
 
+/* Строки каталога на планшете и десктопе — примерно по экрану */
+.feature,
+.pair,
+.drip {
+  min-height: var(--layout-row-height);
+}
+
 /* Строка 1: широкая карточка */
 .feature {
   grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  background: var(--color-rule);
 }
 
 .mediaFeature {
@@ -147,7 +162,7 @@
 }
 
 .photoFeature {
-  width: 260px;
+  width: min(50%, calc(50svh * 0.8));
   aspect-ratio: 4 / 5;
 }
 
@@ -159,10 +174,12 @@
 .tile {
   display: flex;
   flex-direction: column;
+  background: var(--color-bg);
 }
 
 .mediaTile {
-  height: var(--layout-tile-media-height);
+  flex-grow: 1;
+  min-height: var(--layout-tile-media-height);
 }
 
 .mediaPeach {
@@ -174,7 +191,7 @@
 }
 
 .photoTile {
-  width: 200px;
+  width: min(55%, calc(40svh * 0.8));
   aspect-ratio: 4 / 5;
 }
 
@@ -216,16 +233,9 @@
   padding-top: var(--space-s);
 }
 
-/* Строка 3: дрип-пакеты и подписка */
-.extras {
-  grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
-}
-
+/* Строка 3: дрип-пакеты */
 .drip {
-  display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--rule-width);
-  background: var(--color-rule);
 }
 
 .mediaDrip {
@@ -248,19 +258,36 @@
 }
 
 .photoSquare {
-  width: 300px;
+  width: min(75%, 46svh);
   aspect-ratio: 1;
 }
 
+/* Строка 4: подписка — три ячейки на всю ширину */
 .subscription {
+  grid-template-columns: minmax(0, 5fr) minmax(0, 4fr) minmax(0, 3fr);
+}
+
+.subscriptionText,
+.subscriptionSteps,
+.subscriptionBuy {
   position: relative;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: var(--space-l);
-  padding: clamp(var(--space-l), 4vw, var(--space-xl));
+  justify-content: center;
+  gap: calc(var(--space-xs) * 1.5);
+  padding: var(--space-section) var(--space-gutter);
   background: var(--color-surface-peach);
+}
+
+.subscriptionSteps {
+  gap: var(--space-s);
+  background: var(--color-bg);
+}
+
+.subscriptionBuy {
+  overflow: hidden;
+  align-items: flex-start;
+  gap: var(--space-s);
 }
 
 .subscriptionDot {
@@ -270,23 +297,37 @@
   height: 150px;
 }
 
-.subscriptionText,
-.subscriptionBuy {
-  position: relative;
+/* Шаги подписки с номерами 01, 02, 03 */
+.steps {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--space-xs) * 1.5);
+  gap: var(--space-s);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
 }
 
-.subscriptionBuy {
-  align-items: flex-start;
+.steps li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
   gap: var(--space-s);
+  counter-increment: step;
+}
+
+.steps li::before {
+  content: counter(step, decimal-leading-zero);
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-black);
+  color: var(--color-terracotta);
 }
 
 .subscriptionTitle {
   font-family: var(--font-display);
   font-weight: var(--fw-display-thin);
-  font-size: var(--fs-product-m);
+  font-size: var(--fs-product-l);
   line-height: var(--lh-h3);
   letter-spacing: var(--tracking-heading);
 }
@@ -296,10 +337,6 @@
   .feature,
   .pair {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  }
-
-  .extras {
-    grid-template-columns: minmax(0, 1fr);
   }
 
   .mediaFeature {
@@ -312,7 +349,7 @@
   }
 
   .mediaTile {
-    height: calc(var(--layout-tile-media-height) * 0.85);
+    min-height: calc(var(--layout-tile-media-height) * 0.85);
   }
 
   .tileBody {
@@ -323,10 +360,18 @@
     flex-wrap: wrap;
   }
 
+  /* Подписка: текст и шаги рядом, оформление строкой под ними */
   .subscription {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .subscriptionBuy {
+    grid-column: 1 / -1;
     flex-direction: row;
     flex-wrap: wrap;
-    align-items: flex-end;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: var(--space-xl);
   }
 }
 
@@ -335,6 +380,13 @@
   .feature,
   .pair,
   .drip {
+    min-height: 0;
+  }
+
+  .feature,
+  .pair,
+  .drip,
+  .subscription {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -348,16 +400,16 @@
   }
 
   .mediaTile {
-    height: 320px;
+    min-height: 320px;
   }
 
   .photoFeature,
   .photoTile {
-    width: 200px;
+    width: min(60%, 240px);
   }
 
   .photoSquare {
-    width: 260px;
+    width: min(75%, 280px);
   }
 
   .body {
@@ -376,9 +428,14 @@
     letter-spacing: var(--tracking-tight);
   }
 
-  .subscription {
+  .subscriptionText,
+  .subscriptionSteps,
+  .subscriptionBuy {
+    padding: var(--space-xl) var(--space-m);
+  }
+
+  .subscriptionBuy {
     flex-direction: column;
     align-items: stretch;
-    padding: var(--space-xl) var(--space-m);
   }
 }

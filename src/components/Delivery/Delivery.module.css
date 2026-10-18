@@ -1,11 +1,13 @@
 .delivery {
   grid-template-columns: minmax(0, 5fr) minmax(0, 4fr) minmax(0, 3fr);
+  min-height: calc(var(--layout-row-height) / 2);
   scroll-margin-top: var(--layout-header-height);
 }
 
 .cell {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: calc(var(--space-xs) * 1.5);
   padding: var(--space-xl) var(--space-l);
   background: var(--color-bg);
@@ -48,6 +50,7 @@
 @media (max-width: 767px) {
   .delivery {
     grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
   }
 
   .cell {

@@ -5,6 +5,9 @@ import { Footer } from "@/components/Footer/Footer";
 import { Header } from "@/components/Header/Header";
 import { Hero } from "@/components/Hero/Hero";
 import { Marquee } from "@/components/Marquee/Marquee";
+import { FlightLayer } from "@/components/Motion/FlightProduct";
+import { ScrollScenes } from "@/components/Motion/ScrollScenes";
+import { SmoothScroll } from "@/components/Motion/SmoothScroll";
 import { Order } from "@/components/Order/Order";
 import { OrderProvider } from "@/components/Order/OrderContext";
 import { ThemePanel } from "@/components/ThemePanel/ThemePanel";
@@ -17,7 +20,7 @@ export default function Home() {
       <OrderProvider>
         <WavesDefs />
         <Header />
-        <main>
+        <main className="page">
           <Hero />
           <Wordmark />
           <Catalog />
@@ -25,10 +28,13 @@ export default function Home() {
           <About />
           <Delivery />
           <Order />
+          <FlightLayer />
         </main>
         <Footer />
       </OrderProvider>
       <ThemePanel />
+      <SmoothScroll />
+      <ScrollScenes />
     </>
   );
 }

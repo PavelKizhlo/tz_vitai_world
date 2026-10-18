@@ -25,7 +25,8 @@ function subscribe(onChange: () => void) {
   };
 }
 
-function getSnapshot(): MotionMode {
+/** Текущий режим без подписки — для эффектов, которым нельзя ждать гидрации хука */
+export function readMotionMode(): MotionMode {
   const motionOff =
     window.matchMedia(REDUCED).matches || document.documentElement.dataset.motion === "off";
   if (motionOff) return "static";
@@ -33,7 +34,26 @@ function getSnapshot(): MotionMode {
 }
 
 export function useMotionMode() {
-  return useSyncExternalStore(subscribe, getSnapshot, () => "static" as const);
+  return useSyncExternalStore(subscribe, readMotionMode, () => "static" as const);
+}
+
+const WIDE = "(min-width: 768px)";
+
+function subscribeWide(onChange: () => void) {
+  const query = window.matchMedia(WIDE);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+}
+
+/** Перелёт модели из hero в каталог: только с анимациями и на планшете/десктопе */
+export function useFlightEnabled() {
+  const mode = useMotionMode();
+  const wide = useSyncExternalStore(
+    subscribeWide,
+    () => window.matchMedia(WIDE).matches,
+    () => false,
+  );
+  return mode !== "static" && wide;
 }
 
 /** Последняя позиция курсора в окне; один слушатель на все сцены */

@@ -1,5 +1,6 @@
 .hero {
   grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  min-height: var(--layout-row-height);
 }
 
 .text {
@@ -73,8 +74,9 @@
   height: 160px;
 }
 
+/* Модель вписывается и в ширину колонки, и в высоту экрана */
 .photo {
-  width: 290px;
+  width: min(80%, calc(64svh * 0.8));
   aspect-ratio: 4 / 5;
 }
 
@@ -102,7 +104,7 @@
   }
 
   .photo {
-    width: 230px;
+    width: min(80%, calc(56svh * 0.8));
   }
 
   .quarter {
@@ -118,8 +120,11 @@
 
 /* Мобильный: текст, под ним визуал */
 @media (max-width: 767px) {
+  /* Хедер на мобильном ниже на --space-s, визуал занимает остаток экрана */
   .hero {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    min-height: calc(var(--layout-row-height) + var(--space-s));
   }
 
   .text {
@@ -128,11 +133,11 @@
   }
 
   .visual {
-    min-height: 420px;
+    min-height: 340px;
   }
 
   .photo {
-    width: 220px;
+    width: min(64%, calc(40svh * 0.8));
   }
 
   .halves {

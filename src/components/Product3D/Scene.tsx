@@ -14,7 +14,7 @@ import {
   Vector3,
 } from "three";
 import { BLEED, MODELS, PRODUCTS_3D, type Product3DId } from "./config";
-import { type MotionMode, pointer, trackPointer } from "./motion";
+import { type MotionMode, pointer, trackPointer } from "@/components/Motion/motion";
 
 const FOV = 30;
 const CAMERA_Z = 5;
@@ -142,5 +142,7 @@ function Model({ product, mode, onReady }: ModelProps) {
   );
 }
 
+// Модели и все этикетки качаем сразу с модулем сцены, а не когда очередь дойдёт до слота
 useGLTF.preload(MODELS.bag.url);
 useGLTF.preload(MODELS.box.url);
+useTexture.preload(Object.values(PRODUCTS_3D).map((p) => p.texture));

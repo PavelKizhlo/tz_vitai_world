@@ -3,15 +3,20 @@ import styles from "./About.module.css";
 
 export function About() {
   return (
-    <section id="about" className={`ruled ${styles.about}`} aria-labelledby="about-title">
+    <section
+      id="about"
+      className={`ruled ${styles.about}`}
+      aria-labelledby="about-title"
+      data-grid=""
+    >
       <figure className={styles.figure}>
         <Photo caption="фото: Аня и Дмитрий у ростера" className={styles.photo} />
         <figcaption className={styles.caption}>аня и дмитрий, четверг утром</figcaption>
       </figure>
       <div className={styles.text}>
-        <Waves className={styles.waves} />
+        <Waves className={styles.waves} parallax={0.15} />
         <span className="eyebrow">Кто жарит</span>
-        <h2 id="about-title" className={`anim-track-in ${styles.title}`}>
+        <h2 id="about-title" className={styles.title} data-split="" data-split-by="words">
           <span className="heavy">Аня</span>
           <span className={styles.and}>и</span>
           <span className="heavy">Дмитрий</span>
@@ -20,6 +25,19 @@ export function About() {
           Раньше мы работали бариста. С 2019 года жарим сами — маленькими партиями по 5 кг, чтобы
           кофе не залёживался.
         </p>
+        <div className={styles.story}>
+          <p>
+            За стойкой мы каждый день видели одно и то же: хорошее зерно приезжает в кофейню уже
+            уставшим, через месяц-два после обжарки. Тогда и решили жарить сами — понемногу и так,
+            чтобы кофе доходил до чашки, пока он на пике.
+          </p>
+          <p>
+            Сейчас всё устроено просто. По четвергам Дмитрий стоит у ростера, Аня пробует каждую
+            партию и решает, что попадёт в пачки. В пятницу сами развозим заказы по Минску. А если
+            заглянете в мастерскую на Короля, 9, — сварим вам чашку и расскажем, что сейчас в
+            работе.
+          </p>
+        </div>
       </div>
     </section>
   );

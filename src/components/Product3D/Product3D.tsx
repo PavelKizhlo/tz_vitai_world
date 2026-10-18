@@ -5,7 +5,8 @@ import { type CSSProperties, useCallback, useEffect, useRef, useState } from "re
 import { products } from "@/data/catalog";
 import { cx } from "@/components/ui";
 import { BLEED, PRODUCTS_3D, type Product3DId } from "./config";
-import { useMotionMode } from "./motion";
+import { useMotionMode } from "@/components/Motion/motion";
+import { enqueueWarmup, warmupDone } from "./warmup";
 import styles from "./Product3D.module.css";
 
 const Scene = dynamic(() => import("./Scene"), { ssr: false });
@@ -22,18 +23,37 @@ export function Product3D({ product, className }: Product3DProps) {
   const [visible, setVisible] = useState(false);
   const [ready, setReady] = useState(false);
   const mode = useMotionMode();
-  const onReady = useCallback(() => setReady(true), []);
+  const mountedRef = useRef(false);
+  const [warmup] = useState(() => ({
+    start: () => {
+      if (mountedRef.current) return false;
+      mountedRef.current = true;
+      setMounted(true);
+      return true;
+    },
+  }));
+  const onReady = useCallback(() => {
+    setReady(true);
+    warmupDone(warmup);
+  }, [warmup]);
 
-  // Сцену создаём, только когда слот подъехал к экрану, и ставим на паузу, когда уехал
+  // Сцены ниже экрана создаём заранее, по очереди, пока браузер простаивает
+  useEffect(() => enqueueWarmup(warmup), [warmup]);
+
+  // Слот у экрана создаём сразу, не дожидаясь очереди; уехал — ставим сцену на паузу
   useEffect(() => {
     const el = root.current;
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         setVisible(entry.isIntersecting);
-        if (entry.isIntersecting) setMounted(true);
+        if (entry.isIntersecting) {
+          mountedRef.current = true;
+          setMounted(true);
+        }
       },
-      { rootMargin: "200px" },
+      // Запас в экран: при быстром скролле сцена успевает собраться до появления слота
+      { rootMargin: "100% 0px" },
     );
     observer.observe(el);
     return () => observer.disconnect();

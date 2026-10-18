@@ -62,9 +62,9 @@
 
   /* Размеры текста */
   --fs-wordmark: clamp(38px, 9vw, 132px);
-  --fs-display: clamp(34px, 4.1vw, 58px);
-  --fs-h1: clamp(32px, 3.8vw, 54px);
-  --fs-h2: clamp(30px, 3.4vw, 48px);
+  --fs-display: clamp(36px, 4.8vw, 76px);
+  --fs-h1: clamp(32px, 4.4vw, 64px);
+  --fs-h2: clamp(30px, 3.8vw, 56px);
   --fs-h3: 28px;
   --fs-product-xl: 40px;
   --fs-product-l: 34px;
@@ -77,8 +77,8 @@
   --fs-label: 12px;
   --fs-caps-l: 15px;
   --fs-caps-s: 13px;
-  --fs-price-l: 24px;
-  --fs-price-m: 22px;
+  --fs-price-l: 36px;
+  --fs-price-m: 30px;
   --fs-hand: 24px;
   --fs-marquee: 18px;
 
@@ -139,9 +139,13 @@
   --control-border-width: 1px;
 
   /* Сетка и размеры блоков */
+  --layout-container: 1440px;
+  /* Поле по бокам контейнера; % считается от ширины ряда там, где переменная подставлена */
+  --layout-side: max(0px, (100% - var(--layout-container)) / 2);
   --layout-header-height: 72px;
   --layout-logo-height: 36px;
   --layout-logo-footer-height: 56px;
+  --layout-row-height: calc(100svh - var(--layout-header-height));
   --layout-hero-min-height: 600px;
   --layout-media-min-height: 480px;
   --layout-tile-media-height: 380px;
@@ -214,12 +218,42 @@ input {
   color: inherit;
 }
 
-/* Сетка «в линейку»: ячейки на фоне цвета линии, gap даёт волосяные разделители */
+/*
+ * Сетка «в линейку»: ячейки на фоне цвета линии, gap даёт волосяные разделители.
+ * Ряд всегда во всю ширину, а ячейки — в контейнере: поля по бокам залиты фоном,
+ * нижняя граница ряда идёт от края до края экрана, вертикальные — по краям контейнера.
+ */
 .ruled {
+  position: relative;
   display: grid;
   gap: var(--rule-width);
-  background: var(--color-rule);
+  padding-inline: var(--layout-side);
+  background:
+    linear-gradient(var(--color-rule), var(--color-rule)) content-box,
+    linear-gradient(var(--color-bg), var(--color-bg));
   border-bottom: var(--rule-width) solid var(--color-rule);
+}
+
+/* Края контейнера; видны, только когда экран шире контейнера (1440px = --layout-container) */
+@media (min-width: 1441px) {
+  .ruled::before,
+  .ruled::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: var(--rule-width);
+    background: var(--color-rule);
+    pointer-events: none;
+  }
+
+  .ruled::before {
+    left: calc(var(--layout-side) - var(--rule-width));
+  }
+
+  .ruled::after {
+    right: calc(var(--layout-side) - var(--rule-width));
+  }
 }
 
 .font-display {
@@ -296,13 +330,6 @@ input {
   }
 }
 
-@keyframes anim-track-in {
-  from {
-    letter-spacing: 0.42em;
-    opacity: 0.15;
-  }
-}
-
 :root:not([data-motion="off"]) .anim-bob {
   animation: anim-bob var(--motion-bob) ease-in-out infinite;
 }
@@ -323,12 +350,68 @@ input {
     animation-timeline: view();
     animation-range: cover 0% cover 100%;
   }
+}
 
-  :root:not([data-motion="off"]) .anim-track-in {
-    animation: anim-track-in linear both;
-    animation-timeline: view();
-    animation-range: entry 10% cover 40%;
+/*
+ * Scroll-анимации на GSAP (components/Motion). Атрибуты ставятся из JS только при
+ * включённых анимациях, без них вёрстка остаётся статичной.
+ */
+
+/* До старта интро hero скрыт (атрибут ставит скрипт в layout); если JS не загрузился — показываем через 3 с */
+@keyframes fx-reveal {
+  to {
+    opacity: 1;
   }
+}
+
+:root[data-fx-pending] #top {
+  opacity: 0;
+  animation: fx-reveal 0s 3s forwards;
+}
+
+/* Слой перелёта модели (FlightLayer) позиционируется относительно main */
+.page {
+  position: relative;
+}
+
+/* Lenis прокручивает сам */
+html.lenis {
+  scroll-behavior: auto;
+}
+
+/* Свойство translate складывается с transform, поэтому не мешает CSS-анимациям фигур */
+[data-parallax] {
+  translate: 0 var(--parallax, 0px);
+}
+
+/* Ряд, чьи линии рисуются отрезками: фон-линия и края контейнера уходят, ячейки въезжают из-за края ряда */
+:root [data-lines] {
+  position: relative;
+  overflow: clip;
+  background: var(--color-bg);
+}
+
+:root [data-lines]::before,
+:root [data-lines]::after {
+  content: none;
+}
+
+/* Нижняя граница тоже становится отрезком, место под неё держит padding */
+:root [data-lines="ruled"] {
+  border-bottom-width: 0;
+  padding-bottom: var(--rule-width);
+}
+
+.grid-lines {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.grid-lines > span {
+  position: absolute;
+  background: var(--color-rule);
 }
 
 @media (prefers-reduced-motion: reduce) {
