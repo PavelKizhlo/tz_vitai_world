@@ -1,20 +1,43 @@
 .delivery {
+  --photo-height: clamp(260px, 25vw, 380px);
   grid-template-columns: minmax(0, 5fr) minmax(0, 4fr) minmax(0, 3fr);
-  min-height: calc(var(--layout-row-height) / 2);
   scroll-margin-top: var(--layout-header-height);
 }
 
 .cell {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: calc(var(--space-xs) * 1.5);
-  padding: var(--space-xl) var(--space-l);
   background: var(--color-bg);
 }
 
 .hours {
   background: var(--color-surface-200);
+}
+
+/* Фото без полей, встык к линиям сетки */
+.photo {
+  position: relative;
+  flex-shrink: 0;
+  height: var(--photo-height);
+  overflow: hidden;
+}
+
+.image {
+  object-fit: cover;
+}
+
+/* Текст занимает вторую половину ячейки */
+.text {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  gap: calc(var(--space-xs) * 1.5);
+  min-height: var(--photo-height);
+  padding: var(--space-l);
+}
+
+.photoBottom .photo {
+  order: 1;
 }
 
 .value {
@@ -39,21 +62,44 @@
 
 @media (max-width: 1023px) {
   .delivery {
+    --photo-height: clamp(240px, 32vw, 320px);
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 
+  /* Часы во всю ширину: фото слева на половину ряда, текст справа */
   .hours {
     grid-column: 1 / -1;
+    flex-direction: row;
+  }
+
+  .hours .photo {
+    width: 50%;
   }
 }
 
 @media (max-width: 767px) {
   .delivery {
     grid-template-columns: minmax(0, 1fr);
-    min-height: 0;
   }
 
-  .cell {
+  /* В одну колонку везде фото сверху */
+  .hours {
+    flex-direction: column;
+  }
+
+  .photo,
+  .hours .photo {
+    width: auto;
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .photoBottom .photo {
+    order: 0;
+  }
+
+  .text {
+    min-height: 0;
     padding: var(--space-l) var(--space-m);
   }
 }

@@ -7,17 +7,15 @@
 .figure {
   display: flex;
   flex-direction: column;
-  padding: var(--space-l);
   background: var(--color-bg);
 }
 
-/* Фото тянется на всю высоту ряда */
+/* Фото без полей тянется на всю высоту ряда, встык к линиям сетки */
 .photo {
   position: relative;
   flex-grow: 1;
   min-height: 420px;
   overflow: hidden;
-  border-radius: var(--radius-lg);
 }
 
 /* Лица в верхней трети кадра — при обрезке держим их в слоте */
@@ -81,16 +79,9 @@
     min-height: 0;
   }
 
-  .figure {
-    justify-content: center;
-    padding: var(--space-m);
-  }
-
-  /* Колонка узкая, а текст высокий — на всю высоту фото вытянулось бы в полосу */
-  .photo {
-    flex-grow: 0;
-    min-height: 0;
-    aspect-ratio: 3 / 4;
+  /* Колонка узкая и высокая — кадр сильно обрезается по бокам, держим обоих в центре */
+  .image {
+    object-position: 45% 30%;
   }
 }
 

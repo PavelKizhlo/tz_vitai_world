@@ -9,9 +9,25 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  background: var(--color-surface-200);
+}
+
+.introText {
+  display: flex;
+  flex-direction: column;
   gap: var(--space-m);
   padding: clamp(var(--space-xl), 6vw, var(--space-3xl)) var(--space-gutter);
-  background: var(--color-surface-200);
+}
+
+/* Фото без полей добирает высоту ряда под текстом */
+.photo {
+  position: relative;
+  flex-grow: 1;
+  min-height: 300px;
+}
+
+.image {
+  object-fit: cover;
 }
 
 .title {
@@ -28,7 +44,7 @@
 }
 
 .quarter {
-  left: -50px;
+  right: -50px;
   bottom: -50px;
   width: 200px;
   height: 200px;
@@ -168,13 +184,15 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .intro {
+  .introText {
     padding-bottom: var(--space-2xl);
   }
 
-  .quarter {
-    left: auto;
-    right: -50px;
+  /* В одну колонку ряд не тянется — фото держит пропорцию сам */
+  .photo {
+    flex-grow: 0;
+    min-height: 0;
+    aspect-ratio: 16 / 9;
   }
 }
 
@@ -183,9 +201,13 @@
     min-height: 0;
   }
 
-  .intro {
+  .introText {
     gap: var(--space-s);
-    padding: var(--space-2xl) var(--space-m) var(--space-3xl);
+    padding: var(--space-2xl) var(--space-m) var(--space-xl);
+  }
+
+  .photo {
+    aspect-ratio: 4 / 3;
   }
 
   .formCell {

@@ -35,11 +35,36 @@
   perspective: 900px;
 }
 
+.hover,
 .flipper {
   position: absolute;
   inset: 0;
-  transform: rotateY(180deg);
   transform-style: preserve-3d;
+}
+
+.flipper {
+  transform: rotateY(180deg);
+}
+
+/* Наведение добавляет пол-оборота: буква уходит, под ней — фото */
+@media (hover: hover) {
+  .cell:hover .hover {
+    transform: rotateY(180deg);
+  }
+
+  :global(:root:not([data-motion="off"])) .hover {
+    transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover {
+    transition: none !important;
+  }
+}
+
+.photo {
+  object-fit: cover;
 }
 
 .front,
