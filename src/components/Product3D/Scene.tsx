@@ -78,11 +78,14 @@ function Model({ product, mode, onReady }: ModelProps) {
   const group = useRef<Group>(null);
 
   const { object, size } = useMemo(() => {
-    const material = new MeshStandardMaterial({ map, roughness: 0.85, metalness: 0 });
     const root = scene.clone(true);
     root.rotation.set(...model.rotation);
     root.traverse((child) => {
-      if ((child as Mesh).isMesh) (child as Mesh).material = material;
+      if (!(child as Mesh).isMesh) return;
+      const mesh = child as Mesh;
+      // Карту нормалей (складки бумаги у скана пачки) берём из модели, цвет — из этикетки
+      const { normalMap } = mesh.material as MeshStandardMaterial;
+      mesh.material = new MeshStandardMaterial({ map, normalMap, roughness: 0.85, metalness: 0 });
     });
     root.updateMatrixWorld(true);
     const box = new Box3().setFromObject(root);

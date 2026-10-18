@@ -187,6 +187,8 @@
 
 /* Строка 2: две плитки */
 .pair {
+  /* Высота пачки; плитка под ней выше на ~15% с каждой стороны */
+  --tile-bag-height: 32svh;
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
 }
 
@@ -198,7 +200,7 @@
 
 .mediaTile {
   flex-grow: 1;
-  min-height: var(--layout-tile-media-height);
+  min-height: max(var(--layout-tile-media-height), calc(var(--tile-bag-height) * 1.3));
 }
 
 .mediaPale {
@@ -231,7 +233,7 @@
 }
 
 .photoTile {
-  width: min(55%, calc(32svh * 0.8));
+  width: min(55%, calc(var(--tile-bag-height) * 0.8));
   aspect-ratio: 4 / 5;
 }
 
@@ -374,7 +376,10 @@
   }
 
   .mediaTile {
-    min-height: calc(var(--layout-tile-media-height) * 0.85);
+    min-height: max(
+      calc(var(--layout-tile-media-height) * 0.85),
+      calc(var(--tile-bag-height) * 1.3)
+    );
   }
 
   .tileMain {
@@ -432,7 +437,7 @@
   }
 
   .mediaTile {
-    min-height: 320px;
+    min-height: 400px;
   }
 
   .photoFeature,

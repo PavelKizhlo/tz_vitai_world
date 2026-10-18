@@ -1,6 +1,7 @@
 // Собирает ассеты для 3D-товаров (src/components/Product3D):
-//   references/models/{bag,box}.glb  →  public/models/{bag,box}.glb (без чужих текстур, коробка с новой UV-раскладкой)
-//   этикетки по UV-развёртке         →  public/textures/{bag-*,box-drip}.webp
+//   references/models/{paper_bag,box}.glb  →  public/models/{paper_bag,box}.glb
+//     (без чужих текстур и печати, коробка с новой UV-раскладкой)
+//   этикетки по UV-развёртке               →  public/textures/{bag-*,box-drip}.webp
 // Запуск: npm run build:3d
 // Тексты и цвета этикеток — в labels.mjs.
 import { mkdirSync } from "node:fs";
@@ -15,7 +16,7 @@ const TEXTURES_OUT = "public/textures";
 mkdirSync(MODELS_OUT, { recursive: true });
 mkdirSync(TEXTURES_OUT, { recursive: true });
 
-const frames = await processModels(SRC, MODELS_OUT);
+const { frames, kraft } = await processModels(SRC, MODELS_OUT);
 for (const [model, faces] of Object.entries(frames)) {
   for (const [face, { maxError }] of Object.entries(faces)) {
     // Ошибка подгонки в долях атласа: больше ~0.02 — этикетка заметно поплывёт на этой грани
@@ -23,5 +24,5 @@ for (const [model, faces] of Object.entries(frames)) {
   }
 }
 
-await renderLabels({ frames, fonts: await loadFonts(), outDir: TEXTURES_OUT });
+await renderLabels({ frames, kraft, fonts: await loadFonts(), outDir: TEXTURES_OUT });
 console.log(`Готово: ${MODELS_OUT}, ${TEXTURES_OUT}`);

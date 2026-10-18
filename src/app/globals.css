@@ -124,7 +124,7 @@
   --layout-card-row-height: clamp(520px, 70svh, 720px);
   --layout-hero-min-height: 600px;
   --layout-media-min-height: 420px;
-  --layout-tile-media-height: 320px;
+  --layout-tile-media-height: 380px;
   --layout-text-max: 26em;
 
   /* Декор */

@@ -1,7 +1,9 @@
 // Чистит .glb от чужих текстур, коробке строит новую UV-раскладку
 // и для каждой грани считает аффинное преобразование «координаты грани → UV»
 import { NodeIO } from "@gltf-transform/core";
+import { KHRMaterialsPBRSpecularGlossiness } from "@gltf-transform/extensions";
 import { dedup, prune, unweld, weld } from "@gltf-transform/functions";
+import { erasePrint } from "./kraft.mjs";
 
 /** Поворот коробки вокруг Y — должен совпадать с MODELS.box.rotation в src/components/Product3D/config.ts */
 const BOX_YAW = -Math.PI / 2;
@@ -118,9 +120,10 @@ function markIslands(tris) {
 /**
  * Для каждой грани: границы в её координатах и SVG-матрица в единицы UV (0..1).
  * Матрица подбирается по самому крупному UV-острову грани — края, загнутые на соседние
- * острова, иначе портят подгонку.
+ * острова, иначе портят подгонку. Границы — по всей грани; mainOnly ограничивает их тем же
+ * островом: у скана пачки к грани относятся и загибы шва, и этикетка залезла бы на чужие острова.
  */
-function faceFrames(tris) {
+function faceFrames(tris, { mainOnly = false } = {}) {
   markIslands(tris);
   const frames = {};
   for (const [face, { r, d }] of Object.entries(FRAMES)) {
@@ -131,8 +134,9 @@ function faceFrames(tris) {
       islandArea.set(tri.island, (islandArea.get(tri.island) ?? 0) + area(tri.P));
     const main = [...islandArea].sort((a, b) => b[1] - a[1])[0][0];
 
+    const mainTris = own.filter((t) => t.island === main);
     const rows = [];
-    for (const tri of own.filter((t) => t.island === main)) {
+    for (const tri of mainTris) {
       const uv = tri.prim.getAttribute("TEXCOORD_0");
       tri.ids.forEach((j, k) => {
         const [u, v] = uv.getElement(j, []);
@@ -140,8 +144,9 @@ function faceFrames(tris) {
       });
     }
     const { A, err } = fitAffine(rows);
-    const ss = own.flatMap((tri) => tri.P.map((p) => dot(p, r)));
-    const ts = own.flatMap((tri) => tri.P.map((p) => dot(p, d)));
+    const edge = mainOnly ? mainTris : own;
+    const ss = edge.flatMap((tri) => tri.P.map((p) => dot(p, r)));
+    const ts = edge.flatMap((tri) => tri.P.map((p) => dot(p, d)));
     frames[face] = {
       bounds: [Math.min(...ss), Math.min(...ts), Math.max(...ss), Math.max(...ts)],
       matrix: [A[0][0], A[0][1], A[1][0], A[1][1], A[2][0], A[2][1]],
@@ -212,16 +217,36 @@ function relayoutBox(doc) {
   }
 }
 
-/** Обрабатывает bag.glb и box.glb из srcDir, пишет результат в outDir и возвращает рамки граней */
+/**
+ * Пачка — 3D-скан бумажного пакета: крафт из его диффузной карты становится фоном этикеток,
+ * карта нормалей остаётся в модели ради складок бумаги. С обеих стираем чужую печать.
+ * Возвращает диффузную карту (PNG) — без неё в модели остаются только нормали.
+ */
+async function prepareScan(doc) {
+  const material = doc.getRoot().listMaterials()[0];
+  const specGloss = material.getExtension(KHRMaterialsPBRSpecularGlossiness.EXTENSION_NAME);
+  const kraft = await erasePrint(specGloss.getDiffuseTexture().getImage());
+  const normal = material.getNormalTexture();
+  normal.setImage(await erasePrint(normal.getImage(), { whole: true }));
+  // Затенение уже запечено в диффузную карту скана, AO и глянец не нужны
+  material.setOcclusionTexture(null).setBaseColorTexture(null);
+  for (const ext of doc.getRoot().listExtensionsUsed()) ext.dispose();
+  return kraft;
+}
+
+/**
+ * Обрабатывает paper_bag.glb и box.glb из srcDir, пишет результат в outDir.
+ * Возвращает рамки граней обеих моделей и крафт пачки.
+ */
 export async function processModels(srcDir, outDir) {
-  const io = new NodeIO();
+  const io = new NodeIO().registerExtensions([KHRMaterialsPBRSpecularGlossiness]);
   // keepAttributes: иначе prune выбросит UV, на которые больше не ссылается ни одна текстура
   const cleanup = [prune({ keepAttributes: true }), dedup()];
 
-  const bag = await io.read(`${srcDir}/bag.glb`);
-  stripTextures(bag);
+  const bag = await io.read(`${srcDir}/paper_bag.glb`);
+  const kraft = await prepareScan(bag);
   await bag.transform(...cleanup);
-  await io.write(`${outDir}/bag.glb`, bag);
+  await io.write(`${outDir}/paper_bag.glb`, bag);
 
   const box = await io.read(`${srcDir}/box.glb`);
   stripTextures(box);
@@ -232,7 +257,10 @@ export async function processModels(srcDir, outDir) {
   await io.write(`${outDir}/box.glb`, box);
 
   return {
-    bag: faceFrames(triangles(bag, 0)),
-    box: faceFrames(triangles(box, BOX_YAW)),
+    frames: {
+      bag: faceFrames(triangles(bag, 0), { mainOnly: true }),
+      box: faceFrames(triangles(box, BOX_YAW)),
+    },
+    kraft,
   };
 }

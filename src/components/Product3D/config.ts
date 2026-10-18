@@ -10,7 +10,7 @@ type ModelConfig = {
 };
 
 export const MODELS: Record<ModelKind, ModelConfig> = {
-  bag: { url: "/models/bag.glb", rotation: [0, 0, 0] },
+  bag: { url: "/models/paper_bag.glb", rotation: [0, 0, 0] },
   // Коробка в исходнике лежит длинной стороной вдоль Z — разворачиваем лицом к камере
   box: { url: "/models/box.glb", rotation: [0, -Math.PI / 2, 0] },
 };
