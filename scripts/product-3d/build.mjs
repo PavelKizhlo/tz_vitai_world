@@ -2,19 +2,31 @@
 //   references/models/{paper_bag,box}.glb  →  public/models/{paper_bag,box}.glb
 //     (без чужих текстур и печати, коробка с новой UV-раскладкой)
 //   этикетки по UV-развёртке               →  public/textures/{bag-*,box-drip}.webp
+//   плоские превью для формы заявки        →  public/thumbs/<товар>.webp
 // Запуск: npm run build:3d
 // Тексты и цвета этикеток — в labels.mjs.
 import { mkdirSync } from "node:fs";
 import { loadFonts } from "./fonts.mjs";
 import { renderLabels } from "./labels.mjs";
 import { processModels } from "./models.mjs";
+import { renderThumbs } from "./thumbs.mjs";
 
 const SRC = "references/models";
 const MODELS_OUT = "public/models";
 const TEXTURES_OUT = "public/textures";
+const THUMBS_OUT = "public/thumbs";
+
+/** Какой атлас на какой модели — как PRODUCTS_3D в src/components/Product3D/config.ts */
+const PRODUCTS = {
+  ethiopia: { model: "bag", texture: `${TEXTURES_OUT}/bag-ethiopia.webp` },
+  colombia: { model: "bag", texture: `${TEXTURES_OUT}/bag-colombia.webp` },
+  brazil: { model: "bag", texture: `${TEXTURES_OUT}/bag-brazil.webp` },
+  drip: { model: "box", texture: `${TEXTURES_OUT}/box-drip.webp` },
+};
 
 mkdirSync(MODELS_OUT, { recursive: true });
 mkdirSync(TEXTURES_OUT, { recursive: true });
+mkdirSync(THUMBS_OUT, { recursive: true });
 
 const { frames, kraft } = await processModels(SRC, MODELS_OUT);
 for (const [model, faces] of Object.entries(frames)) {
@@ -25,4 +37,5 @@ for (const [model, faces] of Object.entries(frames)) {
 }
 
 await renderLabels({ frames, kraft, fonts: await loadFonts(), outDir: TEXTURES_OUT });
-console.log(`Готово: ${MODELS_OUT}, ${TEXTURES_OUT}`);
+await renderThumbs({ frames, products: PRODUCTS, outDir: THUMBS_OUT });
+console.log(`Готово: ${MODELS_OUT}, ${TEXTURES_OUT}, ${THUMBS_OUT}`);

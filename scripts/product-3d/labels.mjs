@@ -1,7 +1,7 @@
 // Этикетки для пачек и коробки дрипов: SVG в координатах граней модели → WebP-атлас
 import { readFileSync } from "node:fs";
 import sharp from "sharp";
-import { printOnKraft } from "./kraft.mjs";
+import { kraftBoard, printOnKraft } from "./kraft.mjs";
 
 const SIZE = 2048;
 
@@ -9,11 +9,10 @@ const SIZE = 2048;
 const C = {
   white: "#ffffff",
   navy: "#1c2b5f",
-  navyMuted: "#5d6790",
-  gold: "#9c8659",
-  goldDeep: "#7a6741",
-  gold200: "#ede6d8",
 };
+
+/** Картон коробки — в тон крафту пачек, каким он выходит на сайте */
+const BOARD = [121, 96, 69];
 
 /** Шрифты из fonts.mjs и рамки граней из models.mjs — задаются в renderLabels */
 let F;
@@ -80,28 +79,6 @@ const LETTERS = [
 ];
 const CLIP = `<clipPath id="lc"><rect width="100" height="140"/></clipPath>`;
 
-/** Знак 2×2 плитки, левый верхний угол в (x, y), сторона size; на синем фоне синие плитки белеют */
-function mark(x, y, size, bg) {
-  const tile = bg === C.navy ? C.white : C.navy;
-  const inset = bg === C.navy ? C.gold200 : C.white;
-  return `<g transform="translate(${x} ${y}) scale(${size / 160})">
-    <rect width="80" height="80" fill="${tile}"/>
-    <g transform="rotate(35 40 40)">
-      <ellipse cx="40" cy="40" rx="24" ry="35" fill="${inset}"/>
-      <path d="M40 7C29 27 51 53 40 73" fill="none" stroke="${C.navy}" stroke-width="5" stroke-linecap="round"/>
-    </g>
-    <rect x="80" width="80" height="80" fill="${C.gold}"/>
-    <path d="M160 0V80A80 80 0 0 1 80 0Z" fill="${C.white}"/>
-    <rect y="80" width="80" height="80" fill="${C.gold}"/>
-    <g transform="translate(15 85) scale(0.5)"><g clip-path="url(#lc)">
-      <path d="${LETTERS[0]}" fill="none" stroke="${C.white}" stroke-width="22"/>
-    </g></g>
-    <rect x="80" y="80" width="80" height="80" fill="${tile}"/>
-    <path d="M85 155A76 76 0 0 1 155 85A76 76 0 0 1 85 155Z" fill="${inset}"/>
-    <path d="M95 145C114 137 126 103 145 95" fill="none" stroke="${C.navy}" stroke-width="5" stroke-linecap="round"/>
-  </g>`;
-}
-
 /** Вордмарк «КВАРТА»: центр по x, верх в y, высота букв height */
 function wordmark(cx, y, height, color, rotate = 0) {
   const letters = LETTERS.map(
@@ -111,16 +88,13 @@ function wordmark(cx, y, height, color, rotate = 0) {
   return `<g transform="translate(${cx} ${y}) rotate(${rotate}) scale(${height / 112}) translate(-284 0)">${letters}</g>`;
 }
 
-const half = (cx, cy, r, fill) =>
-  `<path d="M${cx - r} ${cy}A${r} ${r} 0 0 1 ${cx + r} ${cy}Z" fill="${fill}"/>`;
-const circle = (cx, cy, r, fill) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}"/>`;
 const rect = (x, y, w, h, fill, r = 0) =>
   `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${fill}"/>`;
 
 /* ---------- Грани ---------- */
 
-/** Во сколько раз единицы рисования крупнее единиц модели: скан пачки — в метрах, рисуем в сантиметрах */
-const UNIT = { bag: 100, box: 1 };
+/** Во сколько раз единицы рисования крупнее единиц модели: модели в метрах, рисуем в сантиметрах */
+const UNIT = { bag: 100, box: 100 };
 
 /**
  * draw(w, h) рисует грань в её координатах: x вправо, y вниз от верхнего левого угла,
@@ -141,14 +115,8 @@ async function face(model, name, draw) {
     <image width="${w}" height="${h}" preserveAspectRatio="none" href="data:image/png;base64,${png.toString("base64")}"/></g>`;
 }
 
-async function render(file, layers, bg) {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${SIZE}" height="${SIZE}">
-    <rect width="${SIZE}" height="${SIZE}" fill="${bg}"/>${(await Promise.all(layers)).join("")}</svg>`;
-  await sharp(Buffer.from(svg)).webp({ quality: 90 }).toFile(file);
-}
-
-/** То же, но слои — краска поверх крафта скана (RGB SIZE×SIZE) */
-async function renderOnKraft(file, layers, kraft) {
+/** Собирает грани в атлас: краска поверх крафта kraft (RGB SIZE×SIZE) */
+async function render(file, layers, kraft) {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${SIZE}" height="${SIZE}">${(await Promise.all(layers)).join("")}</svg>`;
   const ink = await sharp(Buffer.from(svg)).ensureAlpha().raw().toBuffer();
   const rgb = await printOnKraft(kraft, ink, SIZE);
@@ -170,8 +138,8 @@ const SCOOP = svgBody("public/coffee_set/scoop.svg");
 const SCOOP_RATIO = 609 / 636;
 
 /** Ковш: левый верх в (x, y), высота h */
-const scoop = (x, y, h) =>
-  `<g transform="translate(${x} ${y}) scale(${h / 636}) translate(-2257 -1195)">${SCOOP}</g>`;
+const scoop = (x, y, h, color = C.navy) =>
+  `<g transform="translate(${x} ${y}) scale(${h / 636}) translate(-2257 -1195)">${SCOOP.replaceAll(C.navy, color)}</g>`;
 
 /** Паттерны сортов 1920×1080 без фона; color — исходный цвет заливки, его перекрашиваем */
 const PATTERNS = {
@@ -338,88 +306,212 @@ function bagSide(w, h) {
   return knockout(-0.5, -0.5, w + 1, h + 1, wordmark(w / 2 + 0.35, h * 0.45, 0.7, HOLE, -90));
 }
 
-/* ---------- Коробка дрип-пакетов ---------- */
+/* ---------- Коробка дрип-пакетов: картон с откидной крышкой (размеры в сантиметрах) ---------- */
 
-const VARIETIES = [
-  ["Эфиопия", C.gold],
-  ["Колумбия", C.goldDeep],
-  ["Бразилия", C.navy],
+/** Высота бортика крышки на передней и боковых стенках — от верха грани до низа бортика */
+const LID = 3.14;
+
+const BREW = [
+  "Раскройте пакет и повесьте на чашку",
+  "Залейте около 180 мл горячей воды",
+  "Через 3–4 минуты кофе готов",
 ];
 
+/** Синий кружок с номером шага вывороткой */
+function stepBadge(cx, cy, r, n) {
+  const id = `sb${uid++}`;
+  return `<mask id="${id}" maskUnits="userSpaceOnUse" x="${cx - r}" y="${cy - r}" width="${2 * r}" height="${2 * r}">
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="${C.white}"/>
+    ${text(String(n), { font: F.displayMed, size: r * 1.1, x: cx, y: cy + r * 0.4, anchor: "middle", fill: HOLE })}</mask>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="${C.navy}" mask="url(#${id})"/>`;
+}
+
+/** Бортик крышки: синяя плашка, вордмарк и подпись вывороткой */
+function lidBand(w, label) {
+  return knockout(
+    -1,
+    -1,
+    w + 2,
+    LID + 1,
+    wordmark(w / 2, 0.95, 0.85, HOLE) +
+      caps(label, { size: 0.26, x: w / 2, y: 2.45, anchor: "middle", fill: HOLE }),
+  );
+}
+
+/** Перёд: под крышкой ковш и название, внизу три паттерна сортов вывороткой */
 function boxFront(w, h) {
-  const m = h - 0.36;
-  const tx = m + 0.42;
+  // Корпус чуть уже крышки
+  const body = 0.18;
+  const tx = 4.6;
+  const col = (w - 2 * body) / 3;
+  const band = 8.1;
+  const sorts = Object.entries(BAGS);
   return [
-    mark(0.18, 0.18, m),
-    text("ДРИП-ПАКЕТЫ", { font: F.display, size: 0.27, x: tx, y: 0.52, maxWidth: w - tx - 0.18 }),
-    text("АССОРТИ · 10 ШТ", {
-      font: F.textSemi,
-      size: 0.12,
+    lidBand(w, "Обжарка · Минск"),
+    scoop(0.9, 3.85, 3.2),
+    text("ДРИП-ПАКЕТЫ", {
+      font: F.display,
+      size: 0.62,
       x: tx,
-      y: 0.75,
-      tracking: 0.16,
-      fill: C.navyMuted,
+      y: 4.75,
+      fill: C.navy,
+      maxWidth: w - tx - 0.9,
     }),
-    ...VARIETIES.map(
-      ([name, color], i) =>
-        half(tx + 0.14, 1.1 + i * 0.2, 0.12, color) +
-        text(name, { font: F.text, size: 0.12, x: tx + 0.34, y: 1.1 + i * 0.2 }),
+    caps("Ассорти · 10 шт", { size: 0.26, x: tx, y: 5.35 }),
+    ...["Повесьте на чашку, залейте", "горячей водой — кофе готов."].map((str, i) =>
+      text(str, {
+        font: F.text,
+        size: 0.3,
+        x: tx,
+        y: 6.1 + i * 0.45,
+        fill: C.navy,
+        maxWidth: w - tx - 0.9,
+      }),
     ),
-    text("повесь на чашку", {
-      font: F.hand,
-      size: 0.2,
-      x: w - 0.16,
-      y: h - 0.14,
-      anchor: "end",
-      fill: C.goldDeep,
-      rotate: -4,
-    }),
+    ...sorts.map(([, p], i) =>
+      caps(p.name, {
+        size: 0.22,
+        x: body + col * (i + 0.5),
+        y: band - 0.35,
+        anchor: "middle",
+        tracking: 0.16,
+      }),
+    ),
+    knockout(
+      -1,
+      band,
+      w + 2,
+      h - band + 1,
+      sorts
+        .map(([id], i) =>
+          pattern(id, body + col * i + 0.05, band + 0.1, col - 0.1, h - band, HOLE, {
+            tile: 8,
+            ox: 0.2,
+          }),
+        )
+        .join(""),
+    ),
   ].join("");
 }
 
+/** Оборот: как заварить и о мастерской, внизу адрес */
 function boxBack(w, h) {
-  const steps = ["Повесьте пакет на чашку", "Залейте водой", "Кофе готов: дома, в офисе, в дороге"];
+  const x = 0.9;
+  const band = 8.7;
   return [
-    text("КАК ЗАВАРИТЬ", { font: F.display, size: 0.18, x: 0.25, y: 0.45 }),
-    ...steps.map(
-      (s, i) =>
-        circle(0.37, 0.75 + i * 0.32, 0.11, VARIETIES[i][1]) +
-        text(String(i + 1), {
-          font: F.displayMed,
-          size: 0.12,
-          x: 0.37,
-          y: 0.79 + i * 0.32,
-          anchor: "middle",
-          fill: C.white,
-        }) +
-        text(s, { font: F.text, size: 0.13, x: 0.6, y: 0.8 + i * 0.32, maxWidth: w - 0.85 }),
+    text("КАК ЗАВАРИТЬ", { font: F.display, size: 0.5, x, y: 1.6, fill: C.navy }),
+    ...BREW.map(
+      (str, i) =>
+        stepBadge(x + 0.34, 2.55 + i * 1.0, 0.34, i + 1) +
+        text(str, {
+          font: F.text,
+          size: 0.34,
+          x: x + 1.05,
+          y: 2.67 + i * 1.0,
+          fill: C.navy,
+          maxWidth: w - x - 1.95,
+        }),
     ),
-    text("Мастерская обжарки «Кварта» · Минск, ул. Короля, 9", {
-      font: F.text,
-      size: 0.09,
-      x: 0.25,
-      y: h - 0.2,
-      fill: C.navyMuted,
-      maxWidth: w - 0.5,
+    rect(x, 5.65, w - 2 * x, 0.035, C.navy),
+    ...ABOUT.map(([str, font], i) =>
+      text(str, {
+        font: F[font],
+        size: 0.3,
+        x,
+        y: 6.45 + i * 0.47,
+        fill: C.navy,
+        maxWidth: w - 2 * x,
+      }),
+    ),
+    knockout(
+      -1,
+      band,
+      w + 2,
+      h - band + 1,
+      caps("Минск · ул. Короля, 9", {
+        size: 0.28,
+        x: w / 2,
+        y: band + 0.85,
+        anchor: "middle",
+        fill: HOLE,
+      }),
+    ),
+  ].join("");
+}
+
+/** Правый бок (виден в ракурсе 3/4): три сорта с образцами паттерна */
+function boxRight(w) {
+  const sw = 1.6;
+  return [
+    lidBand(w, "10 дрип-пакетов"),
+    ...Object.entries(BAGS).map(([id, p], i) => {
+      const y = 3.9 + i * 2.05;
+      return (
+        knockout(0.9, y, sw, sw, pattern(id, 0.9, y, sw, sw, HOLE, { tile: 5, ox: 0.3, oy: 0.2 })) +
+        text(p.name.toUpperCase(), {
+          font: F.display,
+          size: 0.42,
+          x: 0.9 + sw + 0.5,
+          y: y + 0.5,
+          fill: C.navy,
+        }) +
+        caps(`${p.origin} · ${p.tag}`, {
+          size: 0.2,
+          x: 0.9 + sw + 0.5,
+          y: y + 0.95,
+          tracking: 0.16,
+        }) +
+        text(p.notes, {
+          font: F.text,
+          size: 0.3,
+          x: 0.9 + sw + 0.5,
+          y: y + 1.45,
+          fill: C.navy,
+          maxWidth: w - sw - 2.3,
+        })
+      );
     }),
   ].join("");
 }
 
-function boxTop(w, h) {
-  const stripe = h / 3;
+/** Левый бок: ковш и пара слов о фасовке */
+function boxLeft(w) {
+  const sh = 3.9;
   return [
-    ...VARIETIES.map(([, color], i) => rect(0, i * stripe, 0.35, stripe, color)),
-    wordmark(w / 2 + 0.17, h / 2 - 0.16, 0.32, C.navy),
+    lidBand(w, "Свежая обжарка"),
+    scoop(w / 2 - (sh * SCOOP_RATIO) / 2, 3.8, sh),
+    ...["Мелем зерно в день фасовки", "и запаиваем каждый пакет отдельно"].map((str, i) =>
+      text(str, {
+        font: F.text,
+        size: 0.32,
+        x: w / 2,
+        y: 8.55 + i * 0.47,
+        anchor: "middle",
+        fill: C.navy,
+        maxWidth: w - 1.6,
+      }),
+    ),
   ].join("");
 }
 
-function boxEnd(w, h) {
-  const band = 0.35;
-  return [
-    ...VARIETIES.map(([, color], i) => rect(0, h - band + (i * band) / 3, w, band / 3, color)),
-    wordmark(w / 2, h / 2 - 0.35, 0.18, C.navy),
-    text("10 шт", { font: F.displayMed, size: 0.16, x: w / 2, y: h / 2 + 0.25, anchor: "middle" }),
-  ].join("");
+/** Крышка: сплошная плашка, ковш и вордмарк вывороткой */
+function boxTop(w) {
+  const sh = 4.6;
+  return knockout(
+    -1,
+    -1,
+    w + 2,
+    12,
+    scoop(w / 2 - (sh * SCOOP_RATIO) / 2, 1.4, sh, HOLE) +
+      wordmark(w / 2, 6.8, 0.95, HOLE) +
+      caps("Дрип-пакеты · ассорти · 10 шт", {
+        size: 0.28,
+        x: w / 2,
+        y: 8.75,
+        anchor: "middle",
+        fill: HOLE,
+      }),
+  );
 }
 
 /** Рисует bag-<сорт>.webp и box-drip.webp в outDir; kraft — диффузная карта скана пачки (PNG) */
@@ -433,7 +525,7 @@ export async function renderLabels({ frames: faceFrames, kraft, fonts, outDir })
     .raw()
     .toBuffer();
   for (const [id, p] of Object.entries(BAGS)) {
-    await renderOnKraft(
+    await render(
       `${outDir}/bag-${id}.webp`,
       [
         face("bag", "+Z", bagFront(id, p)),
@@ -450,10 +542,10 @@ export async function renderLabels({ frames: faceFrames, kraft, fonts, outDir })
     [
       face("box", "+Z", boxFront),
       face("box", "-Z", boxBack),
+      face("box", "+X", boxRight),
+      face("box", "-X", boxLeft),
       face("box", "+Y", boxTop),
-      face("box", "+X", boxEnd),
-      face("box", "-X", boxEnd),
     ],
-    C.white,
+    await kraftBoard(SIZE, BOARD),
   );
 }

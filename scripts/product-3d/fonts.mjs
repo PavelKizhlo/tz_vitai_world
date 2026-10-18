@@ -10,7 +10,6 @@ const FONTS = {
   displayMed: ["Unbounded", 500],
   text: ["Onest", 400],
   textSemi: ["Onest", 600],
-  hand: ["Caveat", 500],
 };
 
 // Со старым User-Agent Google Fonts отдаёт полный TTF (с кириллицей) вместо woff2-подмножеств

@@ -6,7 +6,7 @@ import { dedup, prune, unweld, weld } from "@gltf-transform/functions";
 import { erasePrint } from "./kraft.mjs";
 
 /** Поворот коробки вокруг Y — должен совпадать с MODELS.box.rotation в src/components/Product3D/config.ts */
-const BOX_YAW = -Math.PI / 2;
+const BOX_YAW = 0;
 
 // Локальный базис грани, как её видит зритель снаружи: right и down в мировых осях
 const FRAMES = {
@@ -118,7 +118,8 @@ function markIslands(tris) {
 }
 
 /**
- * Для каждой грани: границы в её координатах и SVG-матрица в единицы UV (0..1).
+ * Для каждой грани: границы в её координатах, SVG-матрица в единицы UV (0..1)
+ * и контур — треугольники грани в её координатах (по ним превью вырезаются из атласа).
  * Матрица подбирается по самому крупному UV-острову грани — края, загнутые на соседние
  * острова, иначе портят подгонку. Границы — по всей грани; mainOnly ограничивает их тем же
  * островом: у скана пачки к грани относятся и загибы шва, и этикетка залезла бы на чужие острова.
@@ -145,11 +146,13 @@ function faceFrames(tris, { mainOnly = false } = {}) {
     }
     const { A, err } = fitAffine(rows);
     const edge = mainOnly ? mainTris : own;
-    const ss = edge.flatMap((tri) => tri.P.map((p) => dot(p, r)));
-    const ts = edge.flatMap((tri) => tri.P.map((p) => dot(p, d)));
+    const shape = edge.map((tri) => tri.P.map((p) => [dot(p, r), dot(p, d)]));
+    const ss = shape.flatMap((tri) => tri.map(([s]) => s));
+    const ts = shape.flatMap((tri) => tri.map(([, t]) => t));
     frames[face] = {
       bounds: [Math.min(...ss), Math.min(...ts), Math.max(...ss), Math.max(...ts)],
       matrix: [A[0][0], A[0][1], A[1][0], A[1][1], A[2][0], A[2][1]],
+      shape,
       maxError: err,
     };
   }
@@ -169,7 +172,11 @@ function stripTextures(doc) {
   }
 }
 
-/** Коробка: каждая грань получает свой прямоугольник в атласе. Ряды: перед | зад; верх | низ; торцы */
+/**
+ * Коробка: каждая грань получает свой прямоугольник в атласе. Ряды: перед | зад; верх | низ; торцы.
+ * Бортик крышки и стенка под ним смотрят в одну сторону и попадают в один прямоугольник —
+ * рисунок на бортике продолжает рисунок стенки.
+ */
 function relayoutBox(doc) {
   const tris = triangles(doc, BOX_YAW);
   const ext = {};
@@ -187,7 +194,8 @@ function relayoutBox(doc) {
   }
   const w = (f) => ext[f].s1 - ext[f].s0;
   const h = (f) => ext[f].t1 - ext[f].t0;
-  const gap = 0.08;
+  // Отступ между гранями — доля от самой широкой грани, чтобы не зависеть от единиц модели
+  const gap = 0.045 * Math.max(...Object.keys(ext).map(w));
   const slots = {};
   let y = gap;
   for (const row of [

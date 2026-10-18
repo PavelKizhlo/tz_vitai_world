@@ -131,3 +131,38 @@ export async function printOnKraft(kraft, ink, size) {
   }
   return out;
 }
+
+/** Гауссов шум со средним 128 из генератора с сидом — атлас не меняется от сборки к сборке */
+function noise(size, sigma, seed) {
+  // mulberry32
+  let state = seed;
+  const random = () => {
+    state = (state + 0x6d2b79f5) | 0;
+    let t = Math.imul(state ^ (state >>> 15), 1 | state);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  const buf = Buffer.alloc(size * size);
+  for (let i = 0; i < buf.length; i++) {
+    // Бокс — Мюллер
+    const g = Math.sqrt(-2 * Math.log(1 - random())) * Math.cos(2 * Math.PI * random());
+    buf[i] = Math.max(0, Math.min(255, Math.round(128 + sigma * g)));
+  }
+  return sharp(buf, { raw: { width: size, height: size, channels: 1 } });
+}
+
+/** Гладкий крафт-картон цвета rgb: мелкое волокно и лёгкие пятна; возвращает RGB size×size */
+export async function kraftBoard(size, rgb) {
+  const fiber = await noise(size, 40, 1).blur(0.8).raw().toBuffer();
+  const blots = await noise(size / 8, 40, 2)
+    .resize(size, size, { kernel: "cubic" })
+    .blur(size / 200)
+    .raw()
+    .toBuffer();
+  const out = Buffer.alloc(size * size * 3);
+  for (let i = 0; i < size * size; i++) {
+    const k = 1 + (0.035 * (fiber[i] - 128)) / 40 + (0.035 * (blots[i] - 128)) / 40;
+    for (let c = 0; c < 3; c++) out[i * 3 + c] = Math.max(0, Math.min(255, Math.round(rgb[c] * k)));
+  }
+  return out;
+}

@@ -1,13 +1,37 @@
 "use client";
 
+import Image, { type StaticImageData } from "next/image";
 import { useId, useState, type FormEvent } from "react";
-import { deliveryWays, productOrder, products, type DeliveryWay } from "@/data/catalog";
+import {
+  deliveryWays,
+  productOrder,
+  products,
+  type DeliveryWay,
+  type ProductId,
+} from "@/data/catalog";
 import { buttonClass } from "@/components/ui/button";
 import { cx } from "@/components/ui";
+import brazilThumb from "../../../public/thumbs/brazil.webp";
+import colombiaThumb from "../../../public/thumbs/colombia.webp";
+import dripThumb from "../../../public/thumbs/drip.webp";
+import ethiopiaThumb from "../../../public/thumbs/ethiopia.webp";
 import { useOrder } from "./OrderContext";
 import styles from "./Order.module.css";
 
 type Errors = Partial<Record<"name" | "phone" | "items", string>>;
+
+/**
+ * Плоские превью из npm run build:3d; подписка — две пачки в месяц.
+ * Импорт, а не путь из public: в URL попадает хэш файла, и после пересборки превью
+ * ни оптимизатор картинок, ни браузер не покажут старую версию.
+ */
+const THUMBS: Record<ProductId, StaticImageData[]> = {
+  ethiopia: [ethiopiaThumb],
+  colombia: [colombiaThumb],
+  brazil: [brazilThumb],
+  drip: [dripThumb],
+  subscription: [colombiaThumb, brazilThumb],
+};
 
 function validate(name: string, phone: string, itemsCount: number): Errors {
   const errors: Errors = {};
@@ -128,8 +152,19 @@ export function OrderForm() {
                 type="button"
                 aria-pressed={on}
                 onClick={() => toggle(productId)}
-                className={cx(styles.chip, on && styles.chipOn)}
+                className={cx(styles.chip, styles.chipProduct, on && styles.chipOn)}
               >
+                <span className={styles.thumbs} aria-hidden="true">
+                  {THUMBS[productId].map((thumb) => (
+                    <Image
+                      key={thumb.src}
+                      src={thumb}
+                      alt=""
+                      sizes="140px"
+                      className={styles.thumb}
+                    />
+                  ))}
+                </span>
                 {products[productId].name}
               </button>
             );
