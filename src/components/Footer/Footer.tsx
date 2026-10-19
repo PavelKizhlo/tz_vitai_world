@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { cacheLife } from "next/cache";
 import { Logo, Sketch } from "@/components/ui";
 import { buttonClass } from "@/components/ui/button";
 import styles from "./Footer.module.css";
@@ -32,6 +33,13 @@ const socials: { label: string; href: string; icon: ReactNode }[] = [
     ),
   },
 ];
+
+/** Год для копирайта: попадает в статику страницы и пересчитывается раз в сутки */
+async function CurrentYear() {
+  "use cache";
+  cacheLife("days");
+  return new Date().getFullYear();
+}
 
 /**
  * Футер — такой же ряд-сетка, как секции: сверху логотип и две колонки текста,
@@ -78,7 +86,10 @@ export function Footer() {
       ))}
       <p className={styles.copyright}>
         <Sketch name="beans-row" className={styles.beans} />
-        <span>© 2019–{new Date().getFullYear()} Кварта</span>
+        <span>
+          © 2019–
+          <CurrentYear /> Кварта
+        </span>
         <span className={styles.copyrightNote}>Мастерская обжарки, Минск</span>
       </p>
     </footer>
