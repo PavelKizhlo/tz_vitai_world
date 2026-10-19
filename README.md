@@ -10,6 +10,12 @@
 - Sketchfab
 - Magnific
 
+## Сообщение от TG-бота после успешного заполнения формы
+![screens/tg_screen.png](screens/tg_screen.png)
+
+## Скрин отчёта Lighthouse
+![screens/lighthouse.png](screens/lighthouse.png)
+
 ## Этапы работы
 
 1. Создание публичного репозитория. Инициализация проекта с последней версией Next JS.
