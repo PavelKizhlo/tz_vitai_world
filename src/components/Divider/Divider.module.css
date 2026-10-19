@@ -1,0 +1,46 @@
+/* Три равные ячейки — как брендовая строка футера под ним */
+.divider {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.cell {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  height: clamp(88px, 10vw, 144px);
+  background: var(--color-bg);
+}
+
+/* Беж по краям, белая середина — ряд читается как пауза, а не продолжение формы */
+.cell:nth-child(odd) {
+  background: var(--color-gold-100);
+}
+
+/* Рисунки от центра ячейки: transform свободен, параллакс здесь не используется */
+.pile,
+.spoon,
+.cherries {
+  left: 50%;
+  top: 50%;
+}
+
+/* Горка зёрен выглядывает снизу */
+.pile {
+  width: clamp(150px, 17vw, 260px);
+  transform: translate(-50%, -22%);
+  rotate: -8deg;
+}
+
+/* Ложка лежит почти целиком — вытянутая форма ложится в низкую ячейку */
+.spoon {
+  width: clamp(160px, 21vw, 320px);
+  transform: translate(-50%, -50%);
+  rotate: -6deg;
+}
+
+/* Ягоды срезаны верхним краем */
+.cherries {
+  width: clamp(110px, 14vw, 210px);
+  transform: translate(-50%, -70%);
+  rotate: 14deg;
+}

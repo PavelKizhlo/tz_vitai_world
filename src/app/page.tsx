@@ -1,6 +1,7 @@
 import { About } from "@/components/About/About";
 import { Catalog } from "@/components/Catalog/Catalog";
 import { Delivery } from "@/components/Delivery/Delivery";
+import { Divider } from "@/components/Divider/Divider";
 import { Footer } from "@/components/Footer/Footer";
 import { Header } from "@/components/Header/Header";
 import { Hero } from "@/components/Hero/Hero";
@@ -28,6 +29,7 @@ export default function Home() {
           <About />
           <Delivery />
           <Order />
+          <Divider />
           <FlightLayer />
         </main>
         <Footer />
