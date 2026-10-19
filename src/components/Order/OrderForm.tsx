@@ -16,6 +16,7 @@ import colombiaThumb from "../../../public/thumbs/colombia.webp";
 import dripThumb from "../../../public/thumbs/drip.webp";
 import ethiopiaThumb from "../../../public/thumbs/ethiopia.webp";
 import { useOrder } from "./OrderContext";
+import { UTM_KEYS, useUtm } from "./utm";
 import styles from "./Order.module.css";
 
 type Errors = Partial<Record<"name" | "phone" | "items", string>>;
@@ -44,6 +45,7 @@ function validate(name: string, phone: string, itemsCount: number): Errors {
 export function OrderForm() {
   const id = useId();
   const { picked, toggle, clear } = useOrder();
+  const utm = useUtm();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [way, setWay] = useState<DeliveryWay>("delivery");
@@ -55,7 +57,7 @@ export function OrderForm() {
     const nextErrors = validate(name, phone, picked.size);
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
-    // Отправка заявки на сервер подключается здесь
+    // Отправка заявки на сервер подключается здесь; UTM-метки уже в new FormData(event.currentTarget)
     setSent(true);
   };
 
@@ -90,6 +92,10 @@ export function OrderForm() {
 
   return (
     <form onSubmit={handleSubmit} noValidate className={styles.form}>
+      {/* Источник перехода из рекламы: скрытые поля, пустые метки не отправляются */}
+      {UTM_KEYS.map(
+        (key) => utm[key] && <input key={key} type="hidden" name={key} value={utm[key]} />,
+      )}
       <div className={styles.fields}>
         <div className={styles.field}>
           <label htmlFor={`${id}-name`} className={styles.label}>
