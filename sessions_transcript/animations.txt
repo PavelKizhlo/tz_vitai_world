@@ -1,0 +1,716 @@
+ ▐▛███▛█   Claude Code v2.1.245
+▝▜██████▀  Opus 5 · API Usage Billing
+  ▝▝ ▝▝    ~/Desktop/tz_vitai_world
+
+   Get to finished work sooner with Opus 5.5. Switch anytime with /model.
+
+❯ Нужно добавить сролл-триггерную анимацию появления блоков. Сами блоки нужно   
+  увеличить. Hero-секция занимает по высоте весь вьюпорт. Модель увеличиваем.   
+  Далее при скролле блоки замещают друг друга, двигаясь вдоль линий грида. Сами 
+  линии грида, должны прорисовываться по мере скролла. Можно добавить эффект    
+  параллакса, если где-то это уместно. Буквы под hero-секцией тоже должны иметь 
+  анимацию, например, поворот на 180 градусов вокруг оси Y (пустые квадраты -   
+  квадраты с буквами). Можешь предлагать еще улучшения, предварительно задав    
+  вопросы                                                                       
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Проект небольшой — прочитаю ключевые файлы напрямую.
+
+  Read 1 file, listed 1 directory, ran 3 shell commands (ctrl+o to expand)
+
+⏺ Updated plan
+  ⎿  /plan to preview
+⏺ User approved Claude's plan
+  ⎿  Plan saved to: ~/.claude/plans/pure-petting-flame.md · /plan to edit
+     Скролл-анимации лендинга «Кварта»
+
+     Context
+
+     Лендинг сейчас статичный по структуре: ряды-сетки .ruled (линии = gap: 1px
+     на фоне --color-rule), немного CSS scroll-driven эффектов (anim-spin,
+     anim-slide, anim-track-in, rise в Wordmark), которые не работают в Firefox.
+     Нужно: hero на весь вьюпорт с крупной моделью, ряды ≈ на экран, ячейки
+     въезжают вдоль линий сетки (предыдущий ряд в это время чуть уезжает), линии
+     сетки прорисовываются по мере скролла, параллакс, переворот букв Wordmark
+     (пустой квадрат → квадрат с буквой). Дополнительно согласовано: 3D-пачка
+     «перелетает» из hero в карточку Эфиопии, reveal заголовков по строкам,
+     плавный скролл Lenis.
+
+     Решения пользователя: ячейки въезжают по осям (без pin), GSAP +
+     ScrollTrigger, ряды ≈ 100svh на десктопе/планшете, на мобильном — по
+     контенту.
+
+     Архитектура
+
+     Секции остаются серверными компонентами. Вся анимация — в одном клиентском
+     компоненте, который находит элементы по data-атрибутам. Без анимаций
+     (reduced motion, data-motion="off" из ThemePanel, нет JS) страница выглядит
+     как сейчас: линии статичные, буквы видны, модели в своих слотах.
+
+     Зависимости: gsap (SplitText и ScrollTrigger входят бесплатно), @gsap/react
+     (useGSAP), lenis. Точные версии — npm view при установке.
+
+     Новая папка src/components/Motion/:
+     - gsap.ts — gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP), общие
+       константы (смещения, ease).
+     - SmoothScroll.tsx — Lenis только при включённых анимациях и fine pointer;
+       связка lenis.on("scroll", ScrollTrigger.update), gsap.ticker.add(t => 
+       lenis.raf(t * 1000)), lagSmoothing(0); anchors: { offset: -header } для
+       якорных ссылок; при выключении — destroy(). В globals.css: html.lenis { 
+       scroll-behavior: auto }.
+     - ScrollScenes.tsx — один useGSAP, внутри gsap.matchMedia() по брейкпоинтам
+       (768/1024). Перестраивается при смене useMotionMode()
+       (src/components/Product3D/motion.ts — переиспользуем, перенести в
+       Motion/motion.ts и обновить импорт в Product3D/Scene). Сцены:
+       a. Линии сетки — для каждого контейнера [data-grid] создаёт оверлей <div 
+          class="grid-lines" aria-hidden> с отрезками в зазорах: горизонтальный
+          над ячейкой, если она не в первой строке; вертикальный слева, если не
+          в первой колонке; плюс нижняя линия контейнера. Координаты — по
+          offsetTop/Left (без учёта transform). Ставит контейнеру data-lines,
+          CSS тогда заменяет фон-линию на --color-bg и прячет border-bottom.
+          Отрезки: scaleX/scaleY 0→1 (горизонтальные слева направо, вертикальные
+          сверху вниз), scrub на top 90% → top 40%. Оверлей удаляется в cleanup
+          контекста.
+       b. Въезд ячеек — прямые дети [data-grid]: направление по колонке (первая
+          — слева xPercent: -40, последняя — справа +40, средние/одна колонка —
+          снизу yPercent: 30), opacity 0→1, scrub по входу ряда. Контейнер
+          overflow: clip, чтобы ячейки «выходили из-за линии». Выход ряда
+          (bottom 60% → bottom 0%): лёгкий сдвиг xPercent ±8 в обратную сторону
+          — «замещение». Переопределение направления —
+          data-from="left|right|up".
+       c. Параллакс — [data-parallax="0.2"]: yPercent по прохождению секции.
+          Анимировать через CSS-свойство translate (custom property --parallax),
+          чтобы не конфликтовать с CSS-анимациями transform у Shape/Waves.
+          Цели: Waves в hero/каталоге/«О нас», декоративные Shape, фото в «О
+          нас» (сдвиг внутри рамки), текст hero при уходе вверх.
+       d. Заголовки — [data-split]: SplitText.create(el, { type: "lines", mask: 
+          "lines", autoSplit: true, onSplit }), строки yPercent 100→0 со
+          stagger; hero h1 — по загрузке, остальные — по входу. Убрать
+          anim-track-in у этих заголовков.
+       e. Wordmark — [data-flip]: rotationY 0→180 со stagger по скроллу.
+       f. Hero-интро — по загрузке: линии, ячейки, h1, модель.
+       g. Перелёт модели (≥768px) — см. ниже.
+       - Пересборка при ресайзе по ширине (debounce) и ScrollTrigger.refresh()
+         после document.fonts.ready.
+
+     Перелёт 3D-пачки
+
+     - Новый src/components/Motion/FlightProduct.tsx: FlightSlot (клиентский,
+       принимает id: "hero" | "catalog" и className) и FlightLayer.
+     - Когда перелёт выключен (мобильный / motion off) — каждый FlightSlot
+       рендерит свой <Product3D product="ethiopia">, как сейчас.
+     - Когда включён — слоты пустые (держат размер), FlightLayer (absolute в
+       <main>, z-index ниже хедера, pointer-events: none) рендерит одну модель
+       размером hero-слота. ScrollTrigger со scrub от #top top до входа ряда
+       Эфиопии: translate + scale от rect hero-слота к rect catalog-слота
+       (функции значений + invalidateOnRefresh). На выходе ряда повторяет сдвиг
+       медиа-ячейки, чтобы не расходиться с ней.
+     - Состояние «включён ли перелёт» — общий useSyncExternalStore (motion mode
+       + (min-width: 768px)).
+     - Product3D не меняется: курсор-фоллоу работает через getBoundingClientRect
+       canvas и учитывает transform.
+
+     Размеры и вёрстка
+
+     - globals.css: токен --layout-row-height: calc(100svh - 
+       var(--layout-header-height)); стили .grid-lines, [data-lines],
+       html.lenis. Старые rise/toHeavy/toLight и anim-track-in у переведённых
+       заголовков удалить; anim-spin/anim-slide у Shape оставить.
+     - Hero (Hero.tsx, Hero.module.css): min-height: var(--layout-row-height);
+       модель — height: min(72svh, …) при aspect-ratio: 4/5 (≈ ×1.8 от текущих
+       290px); мобильный — колонка, текст сверху, визуал flex: 1 на остаток
+       экрана. Слот модели → FlightSlot id="hero".
+     - Каталог: ряды .feature, .pair, .extras — min-height: 
+       var(--layout-row-height) (≥768px), медиа-области растягиваются (flex: 1
+       вместо фиксированных --layout-tile-media-height), модели крупнее
+       пропорционально. Слот Эфиопии → FlightSlot id="catalog". .drip получает
+       data-grid.
+     - About, Order — min-height: var(--layout-row-height); Delivery — ~50svh.
+     - Wordmark (Wordmark.tsx/.module.css): ячейка-буква = aspect-ratio: 1,
+       perspective; внутри .flipper (transform-style: preserve-3d, по умолчанию
+       rotateY(180deg) — буква видна без JS) с двумя гранями: лицевая пустая
+       (--color-bg), обратная с буквой (backface-visibility: hidden); у
+       последней ячейки обратная грань коралловая. Чередование тяжёлых/лёгких
+       букв остаётся статичным.
+     - Разметка: всем рядам внутри <main> добавить data-grid, заголовкам —
+       data-split, декору — data-parallax. Header не трогаем (sticky, линии
+       статичные).
+     - page.tsx: обернуть в <SmoothScroll>, добавить <ScrollScenes /> и
+       <FlightLayer />; main — position: relative.
+
+     Критичные файлы
+
+     package.json, src/app/page.tsx, src/app/globals.css,
+     src/components/Motion/* (новые), src/components/Product3D/motion.ts
+     (перенос), Product3D.tsx/Scene.tsx (импорт), Hero/*, Wordmark/*, Catalog/*,
+     About/*, Delivery/*, Order/*, ui/index.tsx (проброс data-parallax у
+     Shape/Waves через props).
+
+     Перед кодом — прочитать в node_modules/next/dist/docs/ раздел про
+     клиентские компоненты/"use client" (требование AGENTS.md).
+
+     Порядок и коммиты (в develop)
+
+     1. chore: зависимости GSAP/Lenis, Motion/gsap.ts, перенос motion.ts,
+        SmoothScroll.
+     2. feat: hero на весь экран и ряды под высоту вьюпорта, увеличены модели.
+     3. feat: прорисовка линий сетки и въезд ячеек при скролле.
+     4. feat: переворот букв Wordmark, reveal заголовков, параллакс.
+     5. feat: перелёт 3D-пачки из hero в каталог.
+
+     Проверка
+
+     - После фич: npx tsc --noEmit, npm run build, npm run lint.
+     - Ручные сценарии: скролл вниз/вверх (scrub обратим), якорные ссылки хедера
+       с учётом высоты хедера, ресайз 1440 → 1024 → 375 (пересборка линий,
+       перелёт выключается на мобильном), ThemePanel «анимации» off/on (всё
+       откатывается к статике и обратно), prefers-reduced-motion, форма заявки
+       работает, Firefox.
+     - Визуальная проверка — только playwright-cli (скриншоты на 1440/1024/375 в
+       нескольких точках скролла) и только после явного согласия пользователя.
+
+  Searched for 1 pattern, ran 1 shell command (ctrl+o to expand)
+
+⏺ Стандартная модель client/server — ничего неожиданного. Ставлю зависимости.
+
+  Searched for 3 patterns, ran 2 shell commands (ctrl+o to expand)
+
+⏺ Пишу базовый Motion-модуль: перенос motion.ts, регистрация плагинов, плавный
+  скролл.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Update(src/components/Motion/motion.ts)
+  ⎿  Added 22 lines, removed 2 lines
+      25    };
+      26  }
+      27  
+      28 -function getSnapshot(): MotionMode {                           
+      28 +/** Текущий режим без подписки — для эффектов, которым нельзя ж
+         +дать гидрации хука */                                          
+      29 +export function readMotionMode(): MotionMode {                 
+      30    const motionOff =
+      31      window.matchMedia(REDUCED).matches || document.documentElem
+          ent.dataset.motion === "off";
+      32    if (motionOff) return "static";
+     ...
+      34  }
+      35  
+      36  export function useMotionMode() {
+      36 -  return useSyncExternalStore(subscribe, getSnapshot, () => "st
+         -atic" as const);                                               
+      37 +  return useSyncExternalStore(subscribe, readMotionMode, () => 
+         +"static" as const);                                            
+      38  }
+      39  
+      40 +const WIDE = "(min-width: 768px)";                             
+      41 +                                                               
+      42 +function subscribeWide(onChange: () => void) {                 
+      43 +  const query = window.matchMedia(WIDE);                       
+      44 +  query.addEventListener("change", onChange);                  
+      45 +  return () => query.removeEventListener("change", onChange);  
+      46 +}                                                              
+      47 +                                                               
+      48 +/** Перелёт модели из hero в каталог: только с анимациями и на 
+         +планшете/десктопе */                                           
+      49 +export function useFlightEnabled() {                           
+      50 +  const mode = useMotionMode();                                
+      51 +  const wide = useSyncExternalStore(                           
+      52 +    subscribeWide,                                             
+      53 +    () => window.matchMedia(WIDE).matches,                     
+      54 +    () => false,                                               
+      55 +  );                                                           
+      56 +  return mode !== "static" && wide;                            
+      57 +}                                                              
+      58 +                                                               
+      59  /** Последняя позиция курсора в окне; один слушатель на все сце
+          ны */
+      60  export const pointer = { x: 0, y: 0, active: false };
+      61  
+
+⏺ Write(src/components/Motion/gsap.ts)
+  ⎿  Wrote 48 lines to src/components/Motion/gsap.ts
+       1 "use client";
+       2 
+       3 import { gsap } from "gsap";
+       4 import { ScrollTrigger } from "gsap/ScrollTrigger";
+       5 import { SplitText } from "gsap/SplitText";
+       6 import { useGSAP } from "@gsap/react";
+       7 
+       8 gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
+       9 
+      10 export { gsap, ScrollTrigger, SplitText, useGSAP };
+     … +45 lines (ctrl+o to expand)
+
+⏺ Write(src/components/Motion/SmoothScroll.tsx)
+  ⎿  Wrote 28 lines to src/components/Motion/SmoothScroll.tsx
+       1 "use client";
+       2 
+       3 import Lenis from "lenis";
+       4 import { useEffect } from "react";
+       5 import { gsap, ScrollTrigger } from "./gsap";
+       7 
+       8 /** Инерционная прокрутка колесом. На тач-устройствах и без аним
+         аций остаётся нативная */
+       9 export function SmoothScroll() {
+      10   const mode = useMotionMode();
+     … +21 lines (ctrl+o to expand)
+
+⏺ Теперь размеры: токен высоты ряда, hero на весь экран, ряды каталога и секций.
+
+  Ran 4 shell commands (ctrl+o to expand)
+⏺ Пишу главный компонент сцен: линии сетки, въезд ячеек, параллакс, заголовки,
+  Wordmark, интро hero.
+
+⏺ Write(src/components/Motion/ScrollScenes.tsx)
+  ⎿  Wrote 296 lines to src/components/Motion/ScrollScenes.tsx
+       1 "use client";
+       2 
+       3 import { useEffect, useState } from "react";
+       4 import {
+       5   DRIFT,
+       6   EASE_OUT,
+       7   EXIT_END,
+       8   EXIT_START,
+       9   SCRUB,
+      10   SLIDE_X,
+     … +324 lines (ctrl+o to expand)
+
+⏺ (summarized)
+  Исправляю две вещи в сценах: пересборку запускаю только при смене ширины, 
+  чтобы догрузка шрифтов не обрывала интро, и добавляю задержку гидрации для 
+  useMotionMode.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Теперь перелёт модели.
+
+⏺ Write(src/components/Motion/FlightProduct.tsx)
+  ⎿  Wrote 114 lines to src/components/Motion/FlightProduct.tsx
+       1 "use client";
+       2 
+       3 import { useRef } from "react";
+       4 import { Product3D } from "@/components/Product3D/Product3D";
+       5 import {
+       6   DRIFT,
+       7   EXIT_END,
+       8   EXIT_START,
+       9   SCRUB,
+      10   ScrollTrigger,
+     … +115 lines (ctrl+o to expand)
+
+⏺ Write(src/components/Motion/FlightProduct.module.css)
+  ⎿  Wrote 16 lines to src/components/Motion/FlightProduct.module.css
+       1 /* Над ячейками и линиями сетки, но под хедером */
+       2 .flyer {
+       3   position: absolute;
+       4   left: 0;
+       5   top: 0;
+       6   z-index: 3;
+       7   pointer-events: none;
+       8   transform-origin: 0 0;
+       9   will-change: transform;
+      10 }
+     … +6 lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Размечаю секции data-атрибутами.
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+⏺ Wordmark: квадраты-перевёртыши.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Подключаю всё в layout.tsx и page.tsx.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Запускаю проверку типов и линтер.
+  Ran 3 shell commands (ctrl+o to expand)
+
+⏺ Учту StrictMode в dev: эффект там запускается дважды, и интро не должно
+  «съедаться» первым прогоном.
+
+  Read 1 file (ctrl+o to expand)
+
+⏺ Update(src/components/Motion/ScrollScenes.tsx)
+  ⎿  Added 5 lines, removed 1 line
+      318        delete root.dataset.fxPending;
+      319        ScrollTrigger.refresh();
+      320  
+      321 -      return () => cleanups.forEach((cleanup) => cleanup());  
+      321 +      return () => {                                          
+      322 +        // Интро прервали (StrictMode в dev, ресайз) — при сле
+          +дующей сборке сыграем его снова                               
+      323 +        if (intro && intro.progress() < 1) introPlayed = false
+          +;                                                             
+      324 +        cleanups.forEach((cleanup) => cleanup());             
+      325 +      };                                                      
+      326      },
+      327      { dependencies: [mode, build], revertOnUpdate: true },
+      328    );
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Все анимации из плана написаны. tsc, lint, prettier и build проходят без
+  ошибок. В браузере я их ещё не смотрел: по CLAUDE.md визуальную проверку через
+  playwright-cli можно запускать только с вашего согласия. Ничего не
+  закоммичено.
+
+  Что изменилось на странице
+  - Высота блоков: hero занимает весь экран под хедером. Ряды каталога, «О нас»
+    и «Заявка» примерно по экрану, «Доставка» — на полэкрана. На мобильном
+    высота по-прежнему по контенту.
+  - Модели и заголовки: модели подстраиваются под ширину колонки и высоту
+    экрана. В hero пачка примерно в 1,6 раза больше прежней (около 460 вместо
+    290 px на экране 1440×900). Заголовки тоже стали крупнее.
+  - Линии сетки прорисовываются при скролле: горизонтальные слева направо,
+    вертикальные сверху вниз.
+  - Въезд ячеек: крайние колонки въезжают сбоку вдоль строки, средние и все
+    ячейки на мобильном — снизу. Когда высокий ряд уходит вверх, его ячейки
+    немного разъезжаются обратно.
+  - Буквы под hero — квадраты-перевёртыши: пустой квадрат поворачивается на 180°
+    по оси Y и показывает букву, последний квадрат открывается коралловым.
+  - Параллакс у волн и декоративных фигур.
+  - Заголовки появляются по строкам, «Аня и Дмитрий» — по словам. В hero всё
+    проигрывается сразу при загрузке, без скролла.
+  - Плавный скролл Lenis — только на десктопе с мышью. Якоря продолжают
+    учитывать высоту хедера.
+  - Перелёт пачки: от 768 px одна модель Эфиопии при скролле уменьшается и
+    переезжает из hero в карточку каталога. На мобильном в каждом слоте своя
+    модель.
+
+  Если анимации выключены в панели темы или в системе (prefers-reduced-motion),
+  страница выглядит как раньше, без движения. Если JS не загрузился, hero
+  покажется сам через 3 секунды.
+
+  Что стоит проверить глазами
+  - Как SplitText делит на строки заголовок «Аня и Дмитрий»: он сложен в
+    колонку, и разбиение могло лечь неровно.
+  - Совпадает ли место, куда садится перелетевшая модель, с карточкой Эфиопии на
+    разных ширинах.
+  - Работу в Firefox.
+
+  Технически: вся анимация собрана в новой папке src/components/Motion/, секции
+  только помечают себя data-атрибутами. Файл motion.ts переехал туда из
+  Product3D. Добавлены зависимости gsap, @gsap/react и lenis. В layout.tsx
+  появился маленький скрипт, который прячет hero до старта интро, чтобы он не
+  мигнул.
+
+❯ колумбия, бразилия и дрип-пакеты появляются слишком медленно. Нужно           
+  приоритезировать загрзку. Пользователь может проскроллить быстрее чем модели  
+  появятся                                                                      
+
+  Listed 1 directory (ctrl+o to expand)
+
+⏺ (summarized)
+  Проблема не в сети — модели весят мало, а в том, что сцена создаётся только 
+  когда слот подъезжает к экрану, из-за чего всё: WebGL-контекст, шейдеры, 
+  текстуры, fade — грузится в последний момент. Сделаю очередь прогрева: после 
+  hero остальные сцены будут монтироваться заранее в простое браузера с 
+  предзагрузкой текстур.
+
+⏺ Write(src/components/Product3D/warmup.ts)
+  ⎿  Wrote 48 lines to src/components/Product3D/warmup.ts
+      1 /**
+      2  * Очередь прогрева 3D-сцен. Сцены вне экрана создаются заранее, 
+      3  * WebGL-контекст, компиляция шейдеров и загрузка текстуры успева
+        ют до того, как пользователь
+      4  * доскроллит. Порядок — порядок регистрации, то есть порядок на 
+      5  */
+      6 type Entry = {
+      7   /** Запустить сцену; false — она уже запущена (например, приеха
+      8   start: () => boolean;
+      9 };
+     … +43 lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+⏺ Update(src/components/Product3D/warmup.ts)
+  ⎿  Added 4 lines, removed 2 lines
+      15  let scheduled = false;
+      16  
+      17  function idle(callback: () => void) {
+      18 -  if ("requestIdleCallback" in window) window.requestIdleCallba
+         -ck(callback, { timeout: 1200 });                               
+      19 -  else window.setTimeout(callback, 200);                       
+      18 +  // Safari до 18 не знает requestIdleCallback                 
+      19 +  if (typeof window.requestIdleCallback === "function")        
+      20 +    window.requestIdleCallback(callback, { timeout: 1200 });   
+      21 +  else setTimeout(callback, 200);                              
+      22  }
+      23  
+      24  function pump() {
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Update(src/components/Product3D/warmup.ts)
+  ⎿  Added 1 line, removed 1 line
+      15  let scheduled = false;
+      16  
+      17  function idle(callback: () => void) {
+      18 -  // Safari до 18 не знает requestIdleCallback                 
+      18 +  // requestIdleCallback есть не во всех браузерах (старый Safa
+         +ri)                                                            
+      19    if (typeof window.requestIdleCallback === "function")
+      20      window.requestIdleCallback(callback, { timeout: 1200 });
+      21    else setTimeout(callback, 200);
+
+⏺ I changed model loading so Colombia, Brazil and the drip pack should be ready
+  before you reach them. tsc, lint, prettier and build pass, but I haven't
+  checked it in a browser yet and nothing is committed.
+
+  The files are small (about 300 KB for everything), so the network wasn't the
+  problem. The slow part was building each 3D scene: it only started when its
+  slot was 200px from the screen, and then the scene still had to be set up and
+  fade in over 0.6 s.
+
+  What I changed:
+  - Pre-building in the background: after the hero, the remaining scenes are
+    built one at a time in page order while the browser is idle, before you
+    scroll to them. Doing them one by one avoids stutter. If a scene never
+    reports it's ready, the next one starts after 4 s anyway. This is in the new
+    file Product3D/warmup.ts.
+  - Labels download upfront: all product label textures now load together with
+    the 3D models, as soon as the 3D code loads, instead of when each slot comes
+    up.
+  - Bigger safety margin: a slot near the screen now starts building a full
+    screen height ahead instead of 200px. This covers fast scrolling before the
+    background queue gets to it.
+
+  Up to five 3D scenes now exist at once, but the ones off screen are paused.
+
+❯ Напиши неболшие тексты (пару абзацев) для каждого товара, чтобы блоки не      
+  выглядели пустыми. Также текст нужен для секции с подпиской (описание того    
+  как это происходит). И чуть подробнее про Аню и Дмитрия                       
+
+  Read 1 file (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+⏺ Тексты добавлены на все карточки товаров, в подписку и в «О нас». Проверка
+  типов, lint и prettier проходят. В браузере я страницу не смотрел и ничего не
+  коммитил.
+
+  Товары. У каждой карточки под нотами вкуса теперь два абзаца: первый про вкус,
+  второй про то, как заваривать и кому подойдёт.
+  - Эфиопия — самый лёгкий и цветочный кофе. Лучше всего в воронке и аэропрессе,
+    без молока.
+  - Колумбия — сладкий кофе на каждый день, который прощает неточности в
+    заварке. «Не знаете, с чего начать, — начните с него».
+  - Бразилия — орех и шоколад, низкая кислотность. Это кофе под эспрессо и
+    капучино.
+  - Дрип-пакеты — три сорта вперемешку, можно сравнить их и выбрать свой.
+    Указано, сколько воды и сколько времени заваривать.
+
+  Подписка. Добавлена вводная фраза «Свежий кофе приезжает сам…» и блок «Как это
+  работает» из трёх шагов с номерами 01–03:
+  1. Выбор сорта.
+  2. Обжарка в первый четверг месяца, доставка в пятницу.
+  3. Перед отправкой напоминаем: сорт можно поменять, месяц пропустить или
+     поставить подписку на паузу.
+
+  На планшете текст и шаги стоят в две колонки, кнопка под ними.
+
+  Аня и Дмитрий. Под прежним вступлением два абзаца:
+  - почему решили жарить сами: в кофейни зерно приходило через месяц-два после
+    обжарки;
+  - как устроена неделя: четверг — обжарка, пятница — развоз, и приглашение
+    зайти в мастерскую на Короля, 9.
+
+  Тексты товаров лежат в src/data/catalog.ts (новые поля description и steps),
+  история — прямо в About.tsx.
+
+  Это мои придумки, их стоит сверить с реальностью:
+  - что Дмитрий стоит у ростера, а Аня пробует каждую партию;
+  - что подписку обжаривают в первый четверг месяца, её можно поставить на паузу
+    или пропустить месяц;
+  - что для дрип-пакетов мелют зерно в день фасовки и запаивают каждый пакет
+    отдельно;
+  - что в мастерской гостю сварят чашку.
+
+  Ноты вкуса я брал существующие, а способы заваривания и описания обжарки —
+  типичные для этих сортов.
+
+  Текста стало заметно больше. Стоит проверить, что подписка в узкой колонке
+  справа и плитки Колумбии и Бразилии по-прежнему влезают в высоту экрана.
+
+❯ перенеси блок с подпиской ниже, пусть занимает всю ширину                     
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+⏺ Подписка теперь стоит отдельным рядом на всю ширину сразу под дрип-пакетами.
+  Типы, lint и prettier проходят; в браузере я её не смотрел, ничего не
+  закоммичено.
+
+  Как устроен ряд подписки. Он разбит на три ячейки сетки, между ними рисуются
+  линии, как в остальных рядах:
+  - Описание: название, «2 пачки раз в месяц» (заголовок стал чуть крупнее) и
+    вводный текст. Фон персиковый.
+  - «Как это работает»: шаги 01–03 на светлом фоне.
+  - Оформление: цена и кнопка «Оформить подписку», голубой кружок-декор переехал
+    сюда. Фон персиковый.
+
+  Высота ряда по содержимому, без растягивания на экран. На планшете описание и
+  шаги стоят в две колонки, а цена с кнопкой — строкой под ними. На мобильном
+  все три ячейки идут одна под другой, кнопка на всю ширину.
+
+  Дрип-пакеты теперь занимают ряд целиком: модель слева, текст справа, высота
+  примерно на экран, как у карточки Эфиопии. При скролле половинки въезжают
+  навстречу друг другу.
+
+  Изменения в Catalog.tsx и Catalog.module.css.
+
+❯ на больших экранах страница выглядит пустовато. Давай добавим контейнер.      
+  Подумай как лучше поступить с границами грида                                 
+
+  Searched for 2 patterns (ctrl+o to expand)
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Теперь прорисовка линий: края контейнера должны рисоваться отрезками вместе с
+  остальными.
+
+  Read 1 file (ctrl+o to expand)
+⏺ Update(src/components/Motion/ScrollScenes.tsx)
+  ⎿  Added 17 lines, removed 4 lines
+      38    );
+      39  }
+      40  
+      41 -/** Отрезки в зазорах между ячейками: над ячейкой (если не перв
+         -ая строка) и слева (если не первая колонка) */                 
+      41 +/**                                                            
+      42 + * Отрезки вокруг ячеек: над ячейкой (если не первая строка) и 
+         +слева (между колонками или по                                  
+      43 + * левому краю контейнера), а у последней колонки — справа по к
+         +раю контейнера, если есть поле                                 
+      44 + */                                                            
+      45  function segmentsOf(grid: HTMLElement, cells: HTMLElement[], ru
+          led: boolean): Segment[] {
+      46    const segments: Segment[] = [];
+      47 +  const contentRight = grid.clientWidth - parseFloat(getCompute
+         +dStyle(grid).paddingRight);                                    
+      48    for (const cell of cells) {
+      49      const { offsetLeft: left, offsetTop: top, offsetWidth: widt
+          h, offsetHeight: height } = cell;
+      46 -    const inner = left > 1 ? 1 : 0;                            
+      50 +    const right = left + width;                                
+      51 +    const hasLeft = left > 1;                                  
+      52 +    const hasRight = right < grid.clientWidth - 1 && right >= c
+         +ontentRight - 1;                                               
+      53 +    // Горизонталь заходит на вертикали по бокам, чтобы на стык
+         +ах не было дырок                                               
+      54      if (top > 1)
+      48 -      segments.push({ axis: "x", left: left - inner, top: top -
+         - 1, size: width + inner });                                    
+      49 -    if (left > 1) segments.push({ axis: "y", left: left - 1, to
+         -p, size: height });                                            
+      55 +      segments.push({                                          
+      56 +        axis: "x",                                             
+      57 +        left: hasLeft ? left - 1 : left,                       
+      58 +        top: top - 1,                                          
+      59 +        size: width + (hasLeft ? 1 : 0) + (hasRight ? 1 : 0),  
+      60 +      });                                                      
+      61 +    if (hasLeft) segments.push({ axis: "y", left: left - 1, top
+         +, size: height });                                             
+      62 +    if (hasRight) segments.push({ axis: "y", left: right, top, 
+         +size: height });                                               
+      63    }
+      64    // Нижняя граница ряда: вместо border-bottom у контейнера поя
+          вляется padding в толщину линии
+      65    if (ruled)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+❯ Проверю сам, ничего не запускай.                                              
+
+⏺ Хорошо, ничего не запускаю. Ниже — что изменилось и на что смотреть.
+
+  Как устроен контейнер. Ширина контента ограничена 1440px, это токен
+  --layout-container в globals.css. Сами ряды остались во всю ширину экрана, а
+  ячейки внутри них сдвинуты к центру за счёт боковых полей. Поля залиты
+  основным фоном.
+
+  Границы сетки:
+  - Нижняя граница каждого ряда идёт от края до края экрана, поэтому боковые
+    поля не пустые, а продолжают сетку.
+  - Вертикальные линии стоят по краям контейнера и между колонками.
+  - Горизонтальные линии внутри ряда (например, над кнопкой подписки на
+    планшете) не выходят за контейнер.
+  - С включёнными анимациями края контейнера рисуются при скролле вместе с
+    остальными линиями. Без анимаций они видны сразу.
+  - Хедер и футер выровнены по тому же контейнеру. Бегущая строка осталась
+    плашкой во всю ширину.
+
+  На что смотреть на широком экране:
+  - Края контейнера: вертикальные линии должны совпадать с краями ячеек в каждом
+    ряду, включая хедер.
+  - Стыки: там, где края контейнера встречаются с горизонтальными линиями, не
+    должно быть разрывов в 1px.
+  - Въезд ячеек: крайние ячейки теперь выезжают из бокового поля, а не из-за
+    края экрана. Если захочется, чтобы они выходили именно из-за края
+    контейнера, это делается отдельно.
+  - Перелёт пачки из hero в карточку Эфиопии должен приземляться точно в слот.
+
+  Если поменяете ширину контейнера в панели темы, вертикальные края без анимаций
+  не подстроятся. Они включаются только на экранах шире 1441px, а это число
+  прописано в медиазапросе в globals.css вручную, потому что переменную туда
+  подставить нельзя.
+
+  Пока экран не шире 1440px, страница выглядит как раньше. Ничего не
+  закоммичено.
+
+❯ увеличь ценники, убери из футера упоминание 3d-моделей, добавь в футер иконки 
+  для соцсетей, ссылки пока на ту же страницу                                   
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Теперь футер: убираю кредиты и добавляю соцсети.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Сделал все три правки. Проверка типов, lint и prettier проходят; в браузере я
+  не смотрел, ничего не закоммичено.
+
+  - Ценники: основная цена выросла с 24 до 36px, цена в плитках Колумбии и
+    Бразилии — с 22 до 30px. Подпись «BYN» тоже чуть крупнее. На планшете цена и
+    кнопка в плитках при нехватке места переносятся на две строки.
+  - Футер: строка про 3D-модели и лицензию убрана.
+  - Соцсети: под логотипом в футере три квадратные кнопки — Instagram, Telegram
+    и YouTube. Все пока ведут на #top, настоящие адреса подставляются в массиве
+    socials в Footer.tsx. Набор соцсетей я выбрал сам; если нужны другие,
+    например ВКонтакте или TikTok, их легко заменить.
+
+  Модели распространяются по лицензии CC BY 4.0, она требует указывать авторов
+  (clon6767 и Vlaxled). Если на сайте их больше нигде нет, стоит вернуть
+  упоминание куда-нибудь неприметно, например мелкой строкой или на отдельной
+  странице. README по правилам проекта я не трогаю.
+
+❯ закоммить изменения                                                           
+
+  Ran 1 shell command (ctrl+o to expand)
+⏺ (summarized)
+  Состав файлов ожидаемый, .claude/launch.json оставляю нетронутым — он был не 
+  закоммичен ещё до меня. Сейчас сделаю два коммита: основной и футер.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+❯ Да, запушь в origin/develop.                                                  
+
+  Pushed to develop (ctrl+o to expand)
+
+⏺ Оба коммита в origin/develop, локальная ветка с ней совпадает:
+  - 9653e84 — scroll-анимации блоков, контейнер сетки и описания товаров;
+  - 262c8e6 — соцсети в футере, убраны кредиты 3D-моделей.
+
+  .claude/launch.json так и остался не закоммиченным, его я не трогал. В main
+  эти изменения попадут через PR, когда решите собрать партию.
