@@ -1,19 +1,12 @@
 import { useEffect, useMemo, useSyncExternalStore } from "react";
+import { UTM_KEYS, type UtmKey } from "./utmKeys";
 
 /**
  * UTM-метки рекламного перехода для заявки. Берутся из адреса страницы, а если их там уже нет
  * (перезагрузили без параметров) — из sessionStorage, куда сохраняются при первом заходе.
  */
 
-export const UTM_KEYS = [
-  "utm_source",
-  "utm_medium",
-  "utm_campaign",
-  "utm_content",
-  "utm_term",
-] as const;
-
-export type UtmKey = (typeof UTM_KEYS)[number];
+export { UTM_KEYS };
 export type Utm = Partial<Record<UtmKey, string>>;
 
 const STORAGE_KEY = "kvarta:utm";

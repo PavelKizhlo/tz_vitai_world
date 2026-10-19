@@ -12,6 +12,7 @@ import {
 } from "@/data/catalog";
 import { buttonClass } from "@/components/ui/button";
 import { cx } from "@/components/ui";
+import { phone as shopPhone } from "@/data/contacts";
 import brazilThumb from "../../../public/thumbs/brazil.webp";
 import colombiaThumb from "../../../public/thumbs/colombia.webp";
 import dripThumb from "../../../public/thumbs/drip.webp";
@@ -45,9 +46,14 @@ const THUMBS: Record<ProductId, StaticImageData[]> = {
 };
 
 /** Уведомление над кнопкой отправки: зелёное — успех, красное — ошибка */
-type Notice = { kind: "success" | "error"; text: string };
+type Notice = { kind: "success" | "error"; text: string; call?: boolean };
 
-const SEND_FAILED = "Не получилось отправить заявку. Попробуйте ещё раз чуть позже";
+/** Сбой отправки: кроме повтора предлагаем позвонить — номер ссылкой */
+const SEND_FAILED: Notice = {
+  kind: "error",
+  text: "Не получилось отправить заявку. Попробуйте ещё раз чуть позже или позвоните нам сами:",
+  call: true,
+};
 
 export function OrderForm() {
   const id = useId();
@@ -77,7 +83,11 @@ export function OrderForm() {
     try {
       const result = await submitOrder(formData);
       if (!result.ok) {
-        setNotice({ kind: "error", text: result.message });
+        setNotice(
+          result.reason === "invalid"
+            ? { kind: "error", text: "Проверьте поля формы и отправьте ещё раз" }
+            : SEND_FAILED,
+        );
         return;
       }
       reset();
@@ -88,7 +98,7 @@ export function OrderForm() {
           : "Спасибо, заявка у нас! Скоро позвоним, чтобы всё уточнить",
       });
     } catch {
-      setNotice({ kind: "error", text: SEND_FAILED });
+      setNotice(SEND_FAILED);
     } finally {
       setSending(false);
     }
@@ -317,6 +327,14 @@ export function OrderForm() {
           )}
         >
           {notice.text}
+          {notice.call && (
+            <>
+              {" "}
+              <a href={shopPhone.href} className={styles.noticeLink}>
+                {shopPhone.label}
+              </a>
+            </>
+          )}
         </p>
       )}
 
