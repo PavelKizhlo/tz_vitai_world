@@ -103,7 +103,7 @@
   }
 }
 
-:global(:root:not([data-motion="off"])) .linesGroup {
+.linesGroup {
   animation: linesSpin var(--lines-speed, var(--motion-lines)) linear infinite;
 }
 

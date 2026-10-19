@@ -25,7 +25,7 @@ import { readMotionMode, useMotionMode } from "./motion";
  * data-split — заголовок появляется по строкам ("intro" — при загрузке), data-split-by="words" — по словам;
  * data-parallax — скорость параллакса, доля от 1;
  * data-flip — грань-переворот в Wordmark.
- * Без анимаций (reduced motion, панель темы) ничего не создаётся — вёрстка остаётся статичной.
+ * Без анимаций (reduced motion) ничего не создаётся — вёрстка остаётся статичной.
  */
 
 let introPlayed = false;
@@ -121,7 +121,7 @@ export function ScrollScenes() {
   const [build, setBuild] = useState(0);
 
   // Сменилась ширина — колонки могли перестроиться, собираем сцены заново.
-  // Сменилась только высота (шрифты, ошибки формы, панель темы) — достаточно пересчитать триггеры
+  // Сменилась только высота (шрифты, ошибки формы) — достаточно пересчитать триггеры
   useEffect(() => {
     const main = document.querySelector("main");
     if (!main) return;

@@ -11,7 +11,6 @@ import { ScrollScenes } from "@/components/Motion/ScrollScenes";
 import { SmoothScroll } from "@/components/Motion/SmoothScroll";
 import { Order } from "@/components/Order/Order";
 import { OrderProvider } from "@/components/Order/OrderContext";
-import { ThemePanel } from "@/components/ThemePanel/ThemePanel";
 import { LinesDefs } from "@/components/ui";
 import { Wordmark } from "@/components/Wordmark/Wordmark";
 
@@ -34,7 +33,6 @@ export default function Home() {
         </main>
         <Footer />
       </OrderProvider>
-      <ThemePanel />
       <SmoothScroll />
       <ScrollScenes />
     </>

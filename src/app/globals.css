@@ -2,7 +2,6 @@
  * Дизайн-токены «Кварты».
  * Все значения на :root не зависят от брейкпоинтов: адаптив выбирает нужный токен
  * в компонентах, а размеры заголовков и отступы секций тянутся через clamp().
- * Панель темы (ThemePanel) сама находит все переменные из этого блока.
  */
 :root {
   /* Цвета: палитра — синий, охра и белый */
@@ -272,7 +271,7 @@ input {
   border: 0;
 }
 
-/* Анимации. Отключаются панелью темы (data-motion="off") и prefers-reduced-motion */
+/* Анимации. Отключаются при prefers-reduced-motion — см. блок в конце файла */
 @keyframes anim-bob {
   0%,
   100% {
@@ -302,16 +301,16 @@ input {
   }
 }
 
-:root:not([data-motion="off"]) .anim-bob {
+.anim-bob {
   animation: anim-bob var(--motion-bob) ease-in-out infinite;
 }
 
-:root:not([data-motion="off"]) .anim-breathe {
+.anim-breathe {
   animation: anim-breathe var(--motion-breathe) ease-in-out infinite;
 }
 
 @supports (animation-timeline: view()) {
-  :root:not([data-motion="off"]) .anim-slide {
+  .anim-slide {
     animation: anim-slide linear both;
     animation-timeline: view();
     animation-range: cover 0% cover 100%;

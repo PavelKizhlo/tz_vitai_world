@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from "react";
 
 /**
- * static — модель стоит неподвижно (reduced motion или анимации выключены в панели темы);
+ * static — модель стоит неподвижно (reduced motion);
  * bob — только покачивание (тач-устройства);
  * follow — покачивание и поворот за курсором (десктоп).
  */
@@ -13,23 +13,12 @@ const FINE_POINTER = "(hover: hover) and (pointer: fine)";
 function subscribe(onChange: () => void) {
   const queries = [window.matchMedia(REDUCED), window.matchMedia(FINE_POINTER)];
   queries.forEach((q) => q.addEventListener("change", onChange));
-  // Панель темы выключает анимации атрибутом data-motion="off" на <html>
-  const observer = new MutationObserver(onChange);
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ["data-motion"],
-  });
-  return () => {
-    queries.forEach((q) => q.removeEventListener("change", onChange));
-    observer.disconnect();
-  };
+  return () => queries.forEach((q) => q.removeEventListener("change", onChange));
 }
 
 /** Текущий режим без подписки — для эффектов, которым нельзя ждать гидрации хука */
 export function readMotionMode(): MotionMode {
-  const motionOff =
-    window.matchMedia(REDUCED).matches || document.documentElement.dataset.motion === "off";
-  if (motionOff) return "static";
+  if (window.matchMedia(REDUCED).matches) return "static";
   return window.matchMedia(FINE_POINTER).matches ? "follow" : "bob";
 }
 

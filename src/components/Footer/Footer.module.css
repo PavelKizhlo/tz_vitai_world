@@ -108,11 +108,6 @@
 
 /* Соцсети — три квадратные ячейки с одной иконкой, заявка под ними во всю ширину */
 @media (max-width: 767px) {
-  .footer {
-    /* Место под кнопку панели темы */
-    padding-bottom: var(--space-2xl);
-  }
-
   .cell,
   .copyright {
     grid-column: 1 / -1;

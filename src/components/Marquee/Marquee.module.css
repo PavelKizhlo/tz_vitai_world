@@ -37,7 +37,7 @@
   }
 }
 
-:global(:root:not([data-motion="off"])) .track {
+.track {
   animation: marquee var(--motion-marquee) linear infinite;
 }
 
