@@ -13,10 +13,12 @@ import { Order } from "@/components/Order/Order";
 import { OrderProvider } from "@/components/Order/OrderContext";
 import { LinesDefs } from "@/components/ui";
 import { Wordmark } from "@/components/Wordmark/Wordmark";
+import { shopJsonLd } from "./structuredData";
 
 export default function Home() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: shopJsonLd }} />
       <OrderProvider>
         <LinesDefs />
         <Header />
