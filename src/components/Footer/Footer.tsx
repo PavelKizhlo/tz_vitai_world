@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { cacheLife } from "next/cache";
 import { Logo, Sketch } from "@/components/ui";
 import { buttonClass } from "@/components/ui/button";
+import { phone } from "@/data/contacts";
 import styles from "./Footer.module.css";
 
 // Ссылки пока ведут наверх страницы — заменить на настоящие профили
@@ -55,6 +56,10 @@ export function Footer() {
         <span className="eyebrow">Мастерская</span>
         <p>
           Минск, ул. Короля, 9
+          <br />
+          <a href={phone.href} className={styles.phone}>
+            {phone.label}
+          </a>
           <br />
           пн–пт 8:00–20:00
           <br />
