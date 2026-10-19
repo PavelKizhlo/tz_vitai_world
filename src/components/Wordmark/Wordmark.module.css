@@ -1,0 +1,102 @@
+.wordmark {
+  grid-template-columns: minmax(0, 1.8fr) repeat(6, minmax(0, 1fr));
+  font-family: var(--font-display);
+  font-size: var(--fs-wordmark);
+  line-height: 1;
+}
+
+.arrowCell,
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.arrowCell {
+  padding: var(--space-m) 0;
+  background: var(--color-gold-100);
+}
+
+.arrow {
+  width: 40%;
+  height: auto;
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 12;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cell {
+  position: relative;
+  aspect-ratio: 1;
+  perspective: 900px;
+}
+
+.hover,
+.flipper {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.flipper {
+  transform: rotateY(180deg);
+}
+
+/* Наведение добавляет пол-оборота: буква уходит, под ней — фото */
+@media (hover: hover) {
+  .cell:hover .hover {
+    transform: rotateY(180deg);
+  }
+
+  .hover {
+    transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover {
+    transition: none !important;
+  }
+}
+
+.photo {
+  object-fit: cover;
+}
+
+.front,
+.back {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+  background: var(--color-bg);
+}
+
+.back {
+  transform: rotateY(180deg);
+}
+
+.backAccent {
+  background: var(--color-navy);
+  color: var(--color-white);
+}
+
+.heavy {
+  font-weight: var(--fw-display-black);
+}
+
+.light {
+  font-weight: var(--fw-display-thin);
+}
+
+@media (max-width: 767px) {
+  .arrowCell {
+    padding: var(--space-s) 0;
+  }
+}

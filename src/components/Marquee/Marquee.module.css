@@ -1,0 +1,53 @@
+.marquee {
+  overflow: hidden;
+  background: var(--color-navy);
+  color: var(--color-white);
+  border-bottom: var(--rule-width) solid var(--color-rule);
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  padding: 20px 0;
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-thin);
+  font-size: var(--fs-marquee);
+  line-height: var(--lh-ui);
+  letter-spacing: var(--tracking-marquee);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Отступ справа у каждого элемента, а не gap — тогда половины ленты равны и сдвиг бесшовный */
+.track > * {
+  margin-right: 28px;
+}
+
+.accent {
+  font-weight: var(--fw-display-black);
+}
+
+.dot {
+  color: var(--color-gold);
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.track {
+  animation: marquee var(--motion-marquee) linear infinite;
+}
+
+@media (max-width: 767px) {
+  .track > * {
+    margin-right: var(--space-m);
+  }
+
+  .track {
+    padding: var(--space-s) 0;
+    font-size: calc(var(--fs-marquee) * 0.85);
+  }
+}

@@ -1,0 +1,73 @@
+/*
+ * Кнопка — ячейка сетки: без рамки и скруглений, встык к краям родителя.
+ * Линии вокруг рисует сам ряд (фон цвета линии + gap), подпись внизу слева, стрелка справа.
+ */
+.button {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-s);
+  min-height: var(--control-height);
+  padding: var(--space-m) var(--space-l);
+  border: 0;
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-light);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-h3);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  /* Меняется только фон: если одновременно переливать и текст, на середине он сливается с фоном */
+  transition: background-color 0.2s;
+}
+
+.button::after {
+  content: "→";
+  transition: transform var(--motion-hover) ease;
+}
+
+.button:hover::after {
+  transform: translateX(6px);
+}
+
+.button:focus-visible {
+  outline-offset: -4px;
+}
+
+.lg {
+  min-height: var(--control-height-lg);
+  padding: var(--space-l);
+  font-size: var(--fs-h3);
+}
+
+.primary {
+  background: var(--color-navy);
+  color: var(--color-white);
+}
+
+.primary:hover {
+  background: var(--color-navy-hover);
+  color: var(--color-white);
+}
+
+.line {
+  background: var(--color-bg);
+  color: var(--color-ink);
+}
+
+.line:hover {
+  background: var(--color-gold-100);
+  color: var(--color-ink);
+}
+
+@media (max-width: 767px) {
+  .button {
+    min-height: calc(var(--control-height) * 0.8);
+    padding: var(--space-m);
+  }
+
+  .lg {
+    min-height: var(--control-height);
+  }
+}

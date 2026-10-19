@@ -1,0 +1,150 @@
+.delivery {
+  --photo-height: clamp(260px, 25vw, 380px);
+  grid-template-columns: minmax(0, 5fr) minmax(0, 4fr) minmax(0, 3fr);
+  scroll-margin-top: var(--layout-header-height);
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+}
+
+.hours {
+  background: var(--color-gold-100);
+}
+
+/* Фото без полей, встык к линиям сетки */
+.photo {
+  position: relative;
+  flex-shrink: 0;
+  height: var(--photo-height);
+  overflow: hidden;
+}
+
+.image {
+  object-fit: cover;
+}
+
+/* Текст занимает вторую половину ячейки */
+.text {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  gap: calc(var(--space-xs) * 1.5);
+  min-height: var(--photo-height);
+  padding: var(--space-l);
+}
+
+.photoBottom .photo {
+  order: 1;
+}
+
+.scoop {
+  right: -60px;
+  bottom: -100px;
+  width: 280px;
+  rotate: -24deg;
+}
+
+.cup {
+  right: -70px;
+  bottom: -80px;
+  width: 290px;
+  rotate: 10deg;
+}
+
+.branch {
+  right: -20px;
+  bottom: -150px;
+  width: 210px;
+  rotate: -28deg;
+}
+
+.value {
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-thin);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
+  letter-spacing: var(--tracking-snug);
+}
+
+.schedule {
+  font-family: var(--font-display);
+  font-size: var(--fs-button);
+  line-height: 1.75;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.schedule b {
+  font-weight: var(--fw-display-bold);
+}
+
+@media (max-width: 1023px) {
+  .delivery {
+    --photo-height: clamp(240px, 32vw, 320px);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  /* Часы во всю ширину: фото слева на половину ряда, текст справа */
+  .hours {
+    grid-column: 1 / -1;
+    flex-direction: row;
+  }
+
+  .hours .photo {
+    width: 50%;
+  }
+
+  /* Текстовые ячейки низкие — рисунки меньше и глубже в углу */
+  .scoop,
+  .cup {
+    right: -70px;
+    bottom: -110px;
+    width: 230px;
+  }
+
+  .cup {
+    bottom: -70px;
+  }
+}
+
+@media (max-width: 767px) {
+  .delivery {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* В одну колонку везде фото сверху */
+  .hours {
+    flex-direction: column;
+  }
+
+  .photo,
+  .hours .photo {
+    width: auto;
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .photoBottom .photo {
+    order: 0;
+  }
+
+  .text {
+    min-height: 0;
+    padding: var(--space-l) var(--space-m);
+  }
+
+  .scoop,
+  .cup {
+    width: 200px;
+  }
+
+  .branch {
+    width: 140px;
+  }
+}

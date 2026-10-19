@@ -1,0 +1,169 @@
+.hero {
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  min-height: var(--layout-row-height);
+}
+
+/* Текст по центру ячейки, кнопки — нижний ряд сетки во всю ширину */
+.text {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+}
+
+/* Ветка в правом нижнем углу: справа от лида и над кнопками, заголовок не задевает */
+.leaves {
+  right: -28%;
+  bottom: -20%;
+  width: clamp(320px, 66%, 640px);
+  rotate: -18deg;
+}
+
+.title {
+  max-width: 12em;
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-thin);
+  font-size: var(--fs-display);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-snug);
+}
+
+.accent {
+  font-weight: var(--fw-display-black);
+  letter-spacing: var(--tracking-tighter);
+  color: var(--color-gold);
+}
+
+.lead {
+  max-width: var(--layout-text-max);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+}
+
+.copy {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-l);
+  padding: var(--space-section) var(--space-gutter);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--rule-width);
+  border-top: var(--rule-width) solid var(--color-rule);
+  background: var(--color-rule);
+}
+
+.visual {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--layout-hero-min-height);
+  background: var(--color-gold-100);
+}
+
+.beans {
+  left: -110px;
+  top: -130px;
+  width: 440px;
+  rotate: 24deg;
+}
+
+.cherries {
+  right: var(--space-l);
+  bottom: var(--space-l);
+  width: 220px;
+  rotate: -20deg;
+}
+
+/* Модель вписывается и в ширину колонки, и в высоту экрана */
+.photo {
+  width: min(80%, calc(64svh * 0.8));
+  aspect-ratio: 4 / 5;
+}
+
+.tag {
+  position: absolute;
+  left: var(--space-l);
+  bottom: var(--space-l);
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-light);
+  font-size: var(--fs-label);
+  line-height: var(--lh-label);
+  letter-spacing: var(--tracking-logo);
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+/* Планшет: две равные колонки, ниже визуал */
+@media (max-width: 1023px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .visual {
+    min-height: calc(var(--layout-hero-min-height) * 0.85);
+  }
+
+  .photo {
+    width: min(80%, calc(56svh * 0.8));
+  }
+
+  .leaves {
+    bottom: -14%;
+  }
+}
+
+/* Мобильный: текст, под ним визуал */
+@media (max-width: 767px) {
+  /* Хедер на мобильном ниже на --space-s, визуал занимает остаток экрана */
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    min-height: calc(var(--layout-row-height) + var(--space-s));
+  }
+
+  .copy {
+    gap: var(--space-m);
+    padding-block: var(--space-xl) var(--space-2xl);
+  }
+
+  .actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .visual {
+    min-height: 340px;
+  }
+
+  .photo {
+    width: min(64%, calc(40svh * 0.8));
+  }
+
+  /* На телефоне свободен только правый верхний угол — справа от короткого «Кофе,» */
+  .leaves {
+    top: -60px;
+    right: -90px;
+    bottom: auto;
+    width: 240px;
+  }
+
+  .cherries {
+    right: var(--space-m);
+    bottom: var(--space-m);
+    width: 140px;
+  }
+
+  .tag {
+    left: var(--space-m);
+    bottom: var(--space-m);
+  }
+}

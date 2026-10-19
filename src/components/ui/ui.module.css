@@ -1,0 +1,180 @@
+/* Плейсхолдер фото */
+.photo {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: calc(var(--space-xs) * 2);
+  border: var(--rule-width) dashed var(--color-line-strong);
+  background: repeating-linear-gradient(
+    135deg,
+    var(--photo-a) 0 var(--deco-stripe),
+    var(--color-line) var(--deco-stripe) calc(var(--deco-stripe) * 2)
+  );
+  --photo-a: var(--color-gold-200);
+}
+
+.photoAlt {
+  --photo-a: var(--color-gold-100);
+}
+
+.photoCaption {
+  padding: 2px var(--space-xs);
+  background: var(--photo-a);
+  color: var(--color-ink-muted);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  text-align: center;
+}
+
+/* Бейдж */
+.badge {
+  align-self: flex-start;
+  padding: 3px var(--space-xs);
+  font-size: var(--fs-badge);
+  line-height: var(--lh-label);
+  font-weight: var(--fw-text-semibold);
+  letter-spacing: var(--tracking-badge);
+  text-transform: uppercase;
+  color: var(--color-ink);
+}
+
+.badgeNavy {
+  background: var(--color-navy);
+  color: var(--color-white);
+}
+
+.badgeGold {
+  background: var(--color-gold-200);
+  color: var(--color-ink);
+}
+
+.badgeNeutral {
+  background: var(--color-gold-200);
+}
+
+/* Цена */
+.price {
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-bold);
+  font-size: var(--fs-price-l);
+  line-height: var(--lh-ui);
+  color: var(--color-gold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.priceM {
+  font-size: var(--fs-price-m);
+}
+
+.currency {
+  margin-left: 8px;
+  font-weight: var(--fw-display-light);
+  font-size: var(--fs-caps-l);
+  letter-spacing: var(--tracking-currency);
+}
+
+/*
+ * Вращающиеся линии (Lines). Лежат под содержимым ячейки, поэтому ячейке нужен isolation: isolate.
+ * Скорость можно задать на месте через --lines-speed.
+ */
+.lines {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  fill: none;
+  stroke: var(--color-gold);
+  stroke-opacity: var(--deco-lines-opacity);
+  stroke-width: var(--deco-lines-stroke);
+}
+
+.lines path {
+  vector-effect: non-scaling-stroke;
+}
+
+.linesGroup {
+  transform-origin: 500px 500px;
+}
+
+@keyframes linesSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.linesGroup {
+  animation: linesSpin var(--lines-speed, var(--motion-lines)) linear infinite;
+}
+
+.linesReverse .linesGroup {
+  animation-direction: reverse;
+}
+
+/*
+ * Фоновые иллюстрации (Sketch). Как и Lines, лежат под содержимым ячейки.
+ * Цвет и прозрачность можно переопределить на месте через background-color и opacity.
+ */
+.sketch {
+  position: absolute;
+  z-index: -1;
+  display: block;
+  height: auto;
+  pointer-events: none;
+  background-color: var(--color-gold);
+  opacity: var(--deco-sketch-opacity);
+  mask-position: center;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+}
+
+/* Логотип: знак из плиток + вордмарк */
+.logo,
+.logoFooter {
+  display: block;
+  width: auto;
+  height: var(--layout-logo-height);
+  max-width: 100%;
+}
+
+.logoFooter {
+  height: var(--layout-logo-footer-height);
+}
+
+/* Плитки знака в шахматном порядке: синий и охра, вставки белые */
+.logoNavy {
+  fill: var(--color-navy);
+}
+
+.logoGold {
+  fill: var(--color-gold);
+}
+
+.logoInset {
+  fill: var(--color-white);
+}
+
+.logoInsetLine,
+.logoMarkLetter,
+.logoLetter {
+  fill: none;
+}
+
+.logoInsetLine {
+  stroke: var(--color-navy);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+.logoMarkLetter {
+  stroke: var(--color-white);
+  stroke-width: 22;
+}
+
+.logoLetter {
+  stroke: currentColor;
+  stroke-width: 16;
+}

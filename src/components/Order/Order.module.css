@@ -1,0 +1,427 @@
+.order {
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  scroll-margin-top: var(--layout-header-height);
+}
+
+.intro {
+  position: relative;
+  isolation: isolate;
+  container-type: inline-size;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-m);
+  padding: clamp(var(--space-xl), 6vw, var(--space-3xl)) var(--space-gutter);
+  background: var(--color-gold-100);
+}
+
+/* Фото без полей во всю высоту ряда рядом с текстом */
+.photo {
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(320px, 32vw, 520px);
+}
+
+.image {
+  object-fit: cover;
+}
+
+/* Рисунок поверх фото, поэтому светлый */
+.beans {
+  z-index: 1;
+  right: -70px;
+  bottom: -90px;
+  width: 300px;
+  rotate: -36deg;
+  background-color: var(--color-white);
+  opacity: 0.6;
+}
+
+/* Ветка свисает из угла над заголовком */
+.leaves {
+  right: -190px;
+  top: -200px;
+  width: 420px;
+  rotate: 150deg;
+}
+
+/* Кегль ограничен шириной ячейки: «попробовать» жирным ≈ 9em и не должно обрезаться */
+.title {
+  max-width: 10em;
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-thin);
+  font-size: min(var(--fs-h2), 10.5cqi);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-snug);
+}
+
+.lead {
+  max-width: var(--layout-text-max);
+}
+
+/* Форма во всю ширину контейнера продолжает сетку страницы: ячейки без полей, между ними — те же линии */
+.formCell {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-rule);
+}
+
+/* Форма */
+.form {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  gap: var(--rule-width);
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--rule-width);
+}
+
+.field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--space-m) var(--space-l);
+  background: var(--color-bg);
+}
+
+/* У поля нет рамки — ошибку и фокус показывает вся ячейка */
+.field:has(.input[aria-invalid="true"]):not(:focus-within) {
+  box-shadow: inset 0 -3px 0 var(--color-error);
+}
+
+.field:focus-within {
+  box-shadow: inset 0 0 0 2px var(--color-focus);
+}
+
+.fieldset {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--color-bg);
+}
+
+.label {
+  margin: 0;
+  padding: 0;
+  font-size: var(--fs-badge);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-text-medium);
+  color: var(--color-ink-muted);
+}
+
+/* float выводит legend из рамки fieldset в обычный поток — над клетками вариантов */
+.fieldset > .label {
+  float: left;
+  width: 100%;
+  padding: var(--space-m) var(--space-l) var(--space-s);
+}
+
+.input {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  outline: none;
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-thin);
+  font-size: clamp(20px, 1.9vw, 26px);
+  line-height: 1.3;
+  color: var(--color-ink);
+}
+
+.input::placeholder {
+  color: var(--color-ink-muted);
+  opacity: 0.7;
+}
+
+/* «Как получить» и вопрос занимают одну ячейку: вопрос накрывает скрытые варианты целиком */
+.swap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.concealed {
+  visibility: hidden;
+}
+
+.questionField {
+  position: absolute;
+  inset: 0;
+}
+
+/* Вопрос: текст длинный, поэтому шрифт текстовый; высоту задаёт ячейка, длинный текст прокручивается */
+.textarea {
+  flex-grow: 1;
+  min-height: 0;
+  resize: none;
+  font-family: var(--font-text);
+  font-weight: var(--fw-text-regular);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-body);
+}
+
+/* Телефон: шаблон «+375 __ ___-__-__» лежит в той же клетке сетки под полем */
+.phone {
+  display: grid;
+}
+
+.phone > * {
+  grid-area: 1 / 1;
+}
+
+.phoneMask {
+  pointer-events: none;
+  white-space: pre;
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-thin);
+  font-size: clamp(20px, 1.9vw, 26px);
+  line-height: 1.3;
+  color: var(--color-ink-muted);
+  opacity: 0.7;
+}
+
+.phoneTyped {
+  visibility: hidden;
+}
+
+/* Ошибка встаёт в строку подписи справа — ячейки не меняют высоту */
+.error {
+  position: absolute;
+  top: var(--space-m);
+  right: var(--space-l);
+  max-width: calc(100% - 7em);
+  font-size: var(--fs-badge);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-text-medium);
+  text-align: right;
+  color: var(--color-error);
+}
+
+/* Варианты — равные клетки на всю ширину, разделённые линиями */
+.chips {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: var(--rule-width);
+  border-top: var(--rule-width) solid var(--color-rule);
+  background: var(--color-rule);
+}
+
+.chip {
+  display: flex;
+  align-items: flex-end;
+  min-height: 96px;
+  padding: var(--space-s) var(--space-m);
+  border: 0;
+  background: var(--color-bg);
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-light);
+  font-size: var(--fs-body-sm);
+  line-height: 1.3;
+  text-align: left;
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.chip:hover {
+  background: var(--color-gold-100);
+}
+
+.chip:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
+}
+
+.chipOn,
+.chipOn:hover {
+  background: var(--color-gold-200);
+  font-weight: var(--fw-display-bold);
+}
+
+/* Товар: превью над названием, всё по центру; у подписки две пачки внахлёст */
+.chipProduct {
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  text-align: center;
+}
+
+.thumbs {
+  --thumb-size: 140px;
+  display: flex;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.thumb {
+  width: var(--thumb-size);
+  height: var(--thumb-size);
+  object-fit: contain;
+}
+
+/* «Задать вопрос»: знак вопроса на месте превью, размер берётся из .thumbs */
+.chipQuestion {
+  align-items: center;
+  justify-content: center;
+  height: var(--thumb-size);
+  font-family: var(--font-display);
+  font-weight: var(--fw-display-thin);
+  font-size: calc(var(--thumb-size) * 0.7);
+  line-height: 1;
+  color: var(--color-gold);
+}
+
+.thumb + .thumb {
+  margin-left: calc(var(--thumb-size) * -0.6);
+}
+
+/* Успешная отправка */
+/* Итог отправки — строка над кнопкой: зелёная при успехе, красная при ошибке */
+.notice {
+  margin: 0;
+  padding: var(--space-m) var(--space-l);
+  background: var(--color-bg);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-text-medium);
+}
+
+.noticeSuccess {
+  color: var(--color-success);
+}
+
+.noticeError {
+  color: var(--color-error);
+}
+
+.noticeLink {
+  color: inherit;
+  font-weight: var(--fw-text-semibold);
+  white-space: nowrap;
+}
+
+/* Пока заявка отправляется, кнопка приглушена, стрелку заменяет индикатор загрузки */
+.submit.submitting,
+.submit.submitting:hover {
+  background: var(--color-navy-muted);
+  cursor: progress;
+}
+
+.submit.submitting::after {
+  display: none;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  flex-shrink: 0;
+  width: 0.9em;
+  height: 0.9em;
+  margin-bottom: 0.1em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@media (max-width: 1023px) {
+  .order {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .intro {
+    padding-bottom: var(--space-2xl);
+  }
+
+  .photo {
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+  }
+}
+
+@media (max-width: 767px) {
+  .order {
+    min-height: 0;
+  }
+
+  .intro {
+    gap: var(--space-s);
+    padding: var(--space-2xl) var(--space-m) var(--space-xl);
+  }
+
+  .photo {
+    aspect-ratio: 4 / 3;
+  }
+
+  .fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Заголовок во всю ширину — ветка только заглядывает в угол */
+  .leaves {
+    right: -170px;
+    top: -180px;
+    width: 340px;
+  }
+
+  /* Зёрна уходят в угол, чтобы не ложиться на лицо */
+  .beans {
+    right: -120px;
+    bottom: -130px;
+    width: 240px;
+  }
+
+  .field {
+    padding: var(--space-s) var(--space-m);
+  }
+
+  .fieldset > .label {
+    padding: var(--space-s) var(--space-m) var(--space-xs);
+  }
+
+  .error {
+    top: var(--space-s);
+    right: var(--space-m);
+  }
+
+  /* Пять клеток в строку на телефоне не влезают — по две, нечётная последняя на всю ширину */
+  .chips {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-flow: row;
+  }
+
+  .chip {
+    min-height: 72px;
+    padding: var(--space-s) var(--space-m);
+  }
+
+  .thumbs {
+    --thumb-size: 100px;
+  }
+
+  .chip:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  .notice {
+    padding: var(--space-s) var(--space-m);
+  }
+}
